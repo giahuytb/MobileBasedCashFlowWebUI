@@ -27,6 +27,7 @@ export default function DashboardAppPage() {
     <>
       <Helmet>
         <title> Dashboard | Minimal UI </title>
+        {console.log(localStorage.getItem('user'))}
       </Helmet>
 
       <Container maxWidth="xl">

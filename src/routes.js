@@ -1,5 +1,6 @@
-import { Navigate, useRoutes } from 'react-router-dom';
+import { Navigate, useNavigate, useRoutes } from 'react-router-dom';
 // layouts
+import { useEffect } from 'react';
 import DashboardLayout from './layouts/dashboard';
 import SimpleLayout from './layouts/simple';
 //
@@ -7,13 +8,30 @@ import BlogPage from './pages/BlogPage';
 import UserPage from './pages/UserPage';
 import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
-import ProductsPage from './pages/ProductsPage';
 import DashboardAppPage from './pages/DashboardAppPage';
+import EventCardsPage from './pages/EventCardsPage';
+
 
 // ----------------------------------------------------------------------
 
 export default function Router() {
+  
+  const navigate = useNavigate();
+
+  // Check if the user is authenticated before rendering the dashboard
+  useEffect(() => {
+    const authToken = localStorage.getItem("authToken");
+    if (!authToken) {
+      navigate("/login");
+    }
+  }, [navigate]);
+
   const routes = useRoutes([
+    {
+      path: '/login',
+      element: <LoginPage />
+    },
+
     {
       path: '/dashboard',
       element: <DashboardLayout />,
@@ -21,14 +39,11 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'products', element: <ProductsPage /> },
+        { path: 'eventcard', element: <EventCardsPage /> },
         { path: 'blog', element: <BlogPage /> },
       ],
     },
-    {
-      path: 'login',
-      element: <LoginPage />,
-    },
+    
     {
       element: <SimpleLayout />,
       children: [

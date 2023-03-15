@@ -3,7 +3,9 @@ import { useState } from 'react';
 import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
+import { useNavigate } from 'react-router-dom';
 import account from '../../../_mock/account';
+import authService from '../../../redux/auth-service';
 
 // ----------------------------------------------------------------------
 
@@ -25,6 +27,7 @@ const MENU_OPTIONS = [
 // ----------------------------------------------------------------------
 
 export default function AccountPopover() {
+  const navigate = useNavigate();
   const [open, setOpen] = useState(null);
 
   const handleOpen = (event) => {
@@ -32,7 +35,10 @@ export default function AccountPopover() {
   };
 
   const handleClose = () => {
+    authService.logout();
     setOpen(null);
+    console.log(localStorage.getItem("user"));
+    navigate('/login', { replace: true });
   };
 
   return (
