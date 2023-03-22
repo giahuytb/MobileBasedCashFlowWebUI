@@ -24,7 +24,7 @@ export default function Router() {
     if (!authToken) {
       navigate("/login");
     }
-  }, [navigate]);
+  });
 
   const routes = useRoutes([
     {
