@@ -26,6 +26,11 @@ const navConfig = [
     path: '/dashboard/blog',
     icon: icon('ic_blog'),
   },
+  {
+    title: 'listview',
+    path: '/dashboard/eventcard/listpage',
+    icon: icon('ic_blog'),
+  },
 ];
 
 export default navConfig;

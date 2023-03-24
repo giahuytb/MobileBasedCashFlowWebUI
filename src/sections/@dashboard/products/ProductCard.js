@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Card, Link, Typography, Stack } from '@mui/material';
+import { Box, Card, Link, Typography, Stack, Button, IconButton,ListItemButton, StepButton } from '@mui/material';
 import { styled } from '@mui/material/styles';
 // utils
 
@@ -33,7 +33,9 @@ export default function ShopProductCard({ product }) {
         <Link color="inherit" underline="hover">
           <Typography variant="subtitle2" noWrap>
             {name}
+        <Button><Link to="/listpage"/>View List</Button>
           </Typography>
+         
         </Link>
       </Stack>
     </Card>

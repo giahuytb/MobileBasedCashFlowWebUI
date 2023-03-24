@@ -7,6 +7,7 @@ import { ProductSort, ProductList, ProductFilterSidebar } from '../sections/@das
 // mock
 import PRODUCTS from '../_mock/products';
 
+
 // ----------------------------------------------------------------------
 
 export default function EventCardsPage() {
@@ -23,12 +24,12 @@ export default function EventCardsPage() {
   return (
     <>
       <Helmet>
-        <title> Dashboard: Products | Minimal UI </title>
+        <title> Dashboard: Event | Minimal UI </title>
       </Helmet>
 
       <Container>
         <Typography variant="h4" sx={{ mb: 5 }}>
-          Products
+        Event
         </Typography>
 
         <Stack direction="row" flexWrap="wrap-reverse" alignItems="center" justifyContent="flex-end" sx={{ mb: 5 }}>
@@ -41,7 +42,6 @@ export default function EventCardsPage() {
             <ProductSort />
           </Stack>
         </Stack>
-
         <ProductList products={PRODUCTS} />
       </Container>
     </>

@@ -6,10 +6,12 @@ const PRODUCT_NAME = [
   'Big Deal',
   'Doodad',
   'Market',
+  'Dream',
+  'Oppturnity'
 ];
 // ----------------------------------------------------------------------
 
-const products = [...Array(4)].map((_, index) => {
+const products = [...Array(6)].map((_, index) => {
   const setIndex = index + 1;
 
   return {
