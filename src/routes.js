@@ -10,6 +10,7 @@ import LoginPage from './pages/LoginPage';
 import Page404 from './pages/Page404';
 import DashboardAppPage from './pages/DashboardAppPage';
 import EventCardsPage from './pages/EventCardsPage';
+import ListPage from './pages/ListPage';
 
 
 // ----------------------------------------------------------------------
@@ -39,11 +40,19 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true },
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'eventcard', element: <EventCardsPage /> },
+        { path: 'eventcard', element: <EventCardsPage /> ,
+        //   children: [{
+        //   path: 'listpage',
+        //   element: <ListPage/>
+        // },],},
+      },
         { path: 'blog', element: <BlogPage /> },
       ],
     },
-    
+    {
+      path: '/listpage',
+      element: <ListPage/>
+    },
     {
       element: <SimpleLayout />,
       children: [
