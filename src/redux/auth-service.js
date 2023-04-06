@@ -1,5 +1,3 @@
-
-import jwtDecode from 'jwt-decode'
 import ApiService from '../api/ApiService'
 
     const loginAsync = async (username, password) => {
@@ -7,7 +5,7 @@ import ApiService from '../api/ApiService'
                 await ApiService.Authenticate(username, password).then(response => {
                 if(response.status === 200){
                     localStorage.setItem("authToken", JSON.stringify(response.data.token));
-                    localStorage.setItem("user", JSON.stringify(jwtDecode(response.data.token)));
+                    localStorage.setItem("user", JSON.stringify(response.data.user));
                 }                                                                   
             })
         }catch(error){

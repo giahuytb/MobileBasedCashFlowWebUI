@@ -11,7 +11,7 @@ const PRODUCT_NAME = [
 ];
 // ----------------------------------------------------------------------
 
-const products = [...Array(6)].map((_, index) => {
+const events = [...Array(6)].map((_, index) => {
   const setIndex = index + 1;
 
   return {
@@ -21,4 +21,4 @@ const products = [...Array(6)].map((_, index) => {
   };
 });
 
-export default products;
+export default events;

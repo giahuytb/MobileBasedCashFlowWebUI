@@ -1,7 +1,8 @@
 import PropTypes from 'prop-types';
 // @mui
-import { Box, Card, Link, Typography, Stack, Button, IconButton,ListItemButton, StepButton } from '@mui/material';
+import { Box, Card, Typography, Stack } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import '@fortawesome/fontawesome-free/css/all.min.css';
 // utils
 
 // ----------------------------------------------------------------------
@@ -13,31 +14,29 @@ const StyledProductImg = styled('img')({
   objectFit: 'cover',
   position: 'absolute',
 });
-
 // ----------------------------------------------------------------------
 
-ShopProductCard.propTypes = {
-  product: PropTypes.object,
+EventCard.propTypes = {
+  eventlist: PropTypes.object,
 };
 
-export default function ShopProductCard({ product }) {
-  const { name, cover } = product;
+export default function EventCard({ eventlist }) {
+  const { name, cover } = eventlist;
 
-  return (
+  return (  
+    <div>
     <Card>
       <Box sx={{ pt: '100%', position: 'relative' }}>
         <StyledProductImg alt={name} src={cover} />
       </Box>
 
-      <Stack spacing={2} sx={{ p: 3 }}>
-        <Link color="inherit" underline="hover">
+      <Stack spacing={2} sx={{ p: 3 }}>     
           <Typography variant="subtitle2" noWrap>
             {name}
-        <Button><Link to="/listpage"/>View List</Button>
-          </Typography>
-         
-        </Link>
+          </Typography>        
       </Stack>
     </Card>
+    {/* <Link to= '/listpage'>  <i className="fas fa-eye"/>  Click here to see </Link> */}
+    </div>
   );
 }

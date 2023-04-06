@@ -35,8 +35,11 @@ export default function AccountPopover() {
   };
 
   const handleClose = () => {
-    authService.logout();
     setOpen(null);
+  };
+
+  const logout = () => {
+    authService.logout();
     console.log(localStorage.getItem("user"));
     navigate('/login', { replace: true });
   };
@@ -103,7 +106,7 @@ export default function AccountPopover() {
 
         <Divider sx={{ borderStyle: 'dashed' }} />
 
-        <MenuItem onClick={handleClose} sx={{ m: 1 }}>
+        <MenuItem onClick={logout} sx={{ m: 1 }}>
           Logout
         </MenuItem>
       </Popover>

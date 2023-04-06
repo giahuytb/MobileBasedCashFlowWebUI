@@ -3,11 +3,11 @@ import { Helmet } from 'react-helmet-async';
 import { styled } from '@mui/material/styles';
 import { Container, Typography} from '@mui/material';
 // hooks
-import useResponsive from '../hooks/useResponsive';
+import useResponsive from '../../hooks/useResponsive';
 // components
-import Logo from '../components/logo';
+import Logo from '../../components/logo';
 // sections
-import { LoginForm } from '../sections/auth/login';
+import { LoginForm } from '../../sections/auth/login';
 
 // ----------------------------------------------------------------------
 
@@ -62,11 +62,11 @@ export default function LoginPage() {
             <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
               Hi, Welcome Back
             </Typography>
-            <img src="/assets/illustrations/illustration_login.png" alt="login" />
+            <img src="https://firebasestorage.googleapis.com/v0/b/mobilebasedcashflow-img.appspot.com/o/Image%2Flogo%202.png?alt=media&token=c4c3c385-8345-4408-9975-5b9451f2b78b" alt="login" />
           </StyledSection>
         )}
 
-        <Container maxWidth="sm">
+        <Container >
           <StyledContent>
             <Typography variant="h4" gutterBottom>
               Sign in to Mobile Based Cash Flow Web Admin
