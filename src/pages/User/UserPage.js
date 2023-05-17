@@ -2,6 +2,7 @@ import { Helmet } from 'react-helmet-async';
 import { filter } from 'lodash';
 import { sentenceCase } from 'change-case';
 import { useState } from 'react';
+import { Paginator } from 'primereact/paginator';
 // @mui
 import {
   Card,
@@ -11,7 +12,6 @@ import {
   Avatar,
   Button,
   Popover,
-  Checkbox,
   TableRow,
   MenuItem,
   TableBody,
@@ -21,6 +21,7 @@ import {
   IconButton,
   TableContainer,
   TablePagination,
+  Checkbox,
 } from '@mui/material';
 // components
 import Label from '../../components/label';
@@ -74,6 +75,10 @@ function applySortFilter(array, comparator, query) {
 }
 
 export default function UserPage() {
+
+  const [basicFirst, setBasicFirst] = useState(0);
+  const [basicRows, setBasicRows] = useState(10);
+
   const [open, setOpen] = useState(null);
 
   const [page, setPage] = useState(0);
@@ -87,6 +92,11 @@ export default function UserPage() {
   const [filterName, setFilterName] = useState('');
 
   const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const onBasicPageChange = (event) => {
+    setBasicFirst(event.first);
+    setBasicRows(event.rows);
+}
 
   const handleOpenMenu = (event) => {
     setOpen(event.currentTarget);
@@ -157,13 +167,16 @@ export default function UserPage() {
           <Typography variant="h4" gutterBottom>
             User
           </Typography>
-          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill" />}>
+          <Button variant="contained" startIcon={<Iconify icon="eva:plus-fill"/>}>
             New User
           </Button>
         </Stack>
 
         <Card>
-          <UserListToolbar numSelected={selected.length} filterName={filterName} onFilterName={handleFilterByName} />
+          <UserListToolbar 
+              numSelected={selected.length} 
+              filterName={filterName} 
+              onFilterName={handleFilterByName} />
 
           <Scrollbar>
             <TableContainer sx={{ minWidth: 800 }}>
@@ -183,12 +196,15 @@ export default function UserPage() {
                     const selectedUser = selected.indexOf(name) !== -1;
 
                     return (
-                      <TableRow hover key={id} tabIndex={-1} role="checkbox" selected={selectedUser}>
+                      <TableRow hover key={id} tabIndex={-1} 
+                            role="checkbox" 
+                            selected={selectedUser}
+                      > 
                         <TableCell padding="checkbox">
                           <Checkbox checked={selectedUser} onChange={(event) => handleClick(event, name)} />
                         </TableCell>
 
-                        <TableCell component="th" scope="row" padding="none">
+                        <TableCell component="th" scope="row">
                           <Stack direction="row" alignItems="center" spacing={2}>
                             <Avatar alt={name} src={avatarUrl} />
                             <Typography variant="subtitle2" noWrap>
@@ -258,6 +274,14 @@ export default function UserPage() {
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
           />
+  
+          <Paginator 
+           first={basicFirst}
+           rows={basicRows} 
+           totalRecords={USERLIST.length} 
+           rowsPerPageOptions={[10, 20, 30]} 
+           onPageChange={onBasicPageChange} />
+
         </Card>
       </Container>
 
@@ -288,6 +312,7 @@ export default function UserPage() {
           <Iconify icon={'eva:trash-2-outline'} sx={{ mr: 2 }} />
           Delete
         </MenuItem>
+        
       </Popover>
     </>
   );

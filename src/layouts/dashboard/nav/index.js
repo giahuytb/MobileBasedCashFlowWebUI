@@ -47,7 +47,7 @@ export default function Nav({ openNav, onCloseNav }) {
   }, [pathname]);
 
   const renderContent = (
-    <Scrollbar style={{backgroundColor: '#b9e8fc'}} 
+    <Scrollbar 
       sx={{
         height: 1,
         '& .simplebar-content': { height: 1, display: 'flex', flexDirection: 'column' },

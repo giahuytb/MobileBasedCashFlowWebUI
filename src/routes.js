@@ -11,6 +11,10 @@ import Page404 from './pages/Page404';
 import DashboardAppPage from './pages/DashboardAppPage';
 import ViewEventCard from './pages/EventCard/index';
 import ViewJobCard from './pages/JobCard/index';
+import GameModePage from './pages/GameMode';
+import ViewDream from './pages/Dream';
+import ViewGameAccount from './pages/GameAccount';
+import ViewAsset from './pages/Asset';
 
 // const ViewEventCard = React.lazy(() => import('./pages/EventCard/index'));
 
@@ -20,13 +24,14 @@ export default function Router() {
   
   const navigate = useNavigate();
   const authToken = localStorage.getItem("authToken");
+  const roles = localStorage.getItem("user");
   // Check if the user is authenticated before rendering the dashboard
   useEffect(() => {
     console.log("On Checking Access Token...");
-    if (!authToken) {
+    if (!authToken && roles !== 'Admin') {
       navigate("/login");
     }
-  },[authToken, navigate]);
+  },[authToken, navigate, roles]);
 
   const routes = useRoutes([
     {
@@ -42,8 +47,12 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true},
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'viewEventCard', element: <ViewEventCard/>},
-        { path: 'viewJobCard', element: <ViewJobCard/>},
+        { path: 'gamemode', element: <GameModePage /> },
+        { path: 'eventcardlist', element: <ViewEventCard/>},
+        { path: 'jobcardlist', element: <ViewJobCard/>},
+        { path: 'dreamlist', element: <ViewDream/>},
+        { path: 'gameaccountlist', element: <ViewGameAccount/>},
+        { path: 'assetList', element: <ViewAsset/>},
       ],
     },
 

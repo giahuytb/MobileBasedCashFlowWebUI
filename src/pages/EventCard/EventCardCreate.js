@@ -10,8 +10,15 @@ import { InputTextarea } from 'primereact/inputtextarea';
 import { Toast } from 'primereact/toast';
 import { Dropdown } from 'primereact/dropdown';
 
+
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import {Button as MyButton} from '@mui/material';
+
 import { storage } from "../../firebase";
+import ApiService from '../../api/ApiService'
+
+import styles from '../../mystyle.module.css';
+import Iconify from '../../components/iconify';
 
 
 EventCardCreate.propTypes = {
@@ -24,31 +31,57 @@ export default function EventCardCreate({ eventCard }) {
     const toast = useRef(null);
     const [loading, setLoading] = useState(false);
     const [imgMesage, setImgMesage] = useState("");
-    const [newEventCard, setNewEventCard] = useState({
-        Event_name: "", Image_url: "", Account_name: "", Cost: "", Down_pay: "", Dept: "", 
-        Cash_flow: "", Trading_range: "", Event_description: "", Event_type_id: "",  Action: "",
-    });
+    const [newEventCard, setNewEventCard] = useState(
+        {
+        Event_name: "", Image_url: "", Account_name: "Empty", Cost: "", Down_pay: "", Dept: "", 
+        Cash_flow: "", Trading_range: "", Event_description: "", Event_type_id: "",  Action: "", Game_mod_id : 1,
+        });
     const [file, setFile] = useState([])
     const validExt = ["jpg", "png", "jpeg"];
 
     const [selectedAction, setSelectedAction] = useState(null);
     const [selectedType, setSelectedType] = useState(null);
+    const [selectedGameAccount, setSelectedGameAccount] = useState(null);
+    const [gameAccount, setGameAccount] = useState(null);
 
     const action = [
-        { name: 'Buy', code: '1' },
-        { name: 'Sell', code: '2' },
-        { name: 'Pay', code: '3' },
-        { name: 'Double the stock', code: '4' },
-        { name: 'Halve the stock', code: '5' },
+        { name: 'Buy', code: 1 },
+        { name: 'Sell', code: 2 },
+        { name: 'Pay', code: 3 },
+        { name: 'Double the stock', code: 4 },
+        { name: 'Halve the stock', code: 5 },
     ];
 
     const eventType = [
-        { name: 'Big Deal', code: '1' },
-        { name: 'Small Deal', code: '2' },
-        { name: 'Doodad', code: '3' },
-        { name: 'Market', code: '4' },
-        { name: 'Opotunity', code: '5' },
+        { name: 'Big Deal', code: 1 },
+        { name: 'Small Deal', code: 2 },
+        { name: 'Doodad', code: 3 },
+        { name: 'Market', code: 4 },
+        { name: 'Opotunity', code: 5 },
     ];
+
+    const GetAllGameAccount = async () => {
+        try {
+            ApiService.GetAllGameAccount()
+                .then(response => {
+                    setGameAccount(response.data);
+                })
+        } catch (error) {
+            if (error.response) {
+                // get response with a status code not in range 2xx
+                console.log(error.response.data.data);
+                console.log(error.response.data.status);
+                console.log(error.response.data.headers);
+              } else if (error.request) {
+                // no response
+                console.log(error.request);
+              } else {
+                // Something wrong in setting up the request
+                console.log("Error", error.message);
+              }
+              console.log(error.config);
+        }
+    }
 
     const onchangeImg = (e) => {
         setFile(e.target.files[0])
@@ -70,8 +103,19 @@ export default function EventCardCreate({ eventCard }) {
         }
     }
 
+    const onGameAccountChange= (e) => {
+        setSelectedGameAccount(e.value);
+        // console.log(e.value);
+        if(e.value !== undefined){          
+            setNewEventCard ({ ...newEventCard, Account_name: e.value.Game_account_name });
+        }
+    }
+
     const handleIconClick = useCallback(() => {
+        console.log(gameAccount);
         setModalIsOpen(true);
+        // GetAllGameAccount();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
       }, []);
 
     useEffect(() => {
@@ -82,6 +126,11 @@ export default function EventCardCreate({ eventCard }) {
         setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newEventCard.Image_url]);
+
+        useEffect(() => {
+        GetAllGameAccount();   
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const submitForm = async (e) => {
         setLoading(true);
@@ -112,18 +161,19 @@ export default function EventCardCreate({ eventCard }) {
     }
 
     return (
-        <div>
+        <div style={{marginBottom: 10}}>
             <Toast ref={toast} />
-                <i
-                className="fas fa-plus-circle fa-2x"
+            <MyButton 
                 style={{ float: 'right' }}
-                color='red'
+                variant="contained" 
+                startIcon={<Iconify icon="eva:plus-fill"/>}
                 onClick={handleIconClick}
                 tabIndex={0}
                 role="button"
                 aria-hidden="true"
-                aria-label="Close modal"
-                />
+                aria-label="Close modal">
+                New card
+            </MyButton>
             <Modal
                 isOpen={modalIsOpen}
                 ariaHideApp={false}
@@ -140,10 +190,10 @@ export default function EventCardCreate({ eventCard }) {
                     },
                     content: {
                         position: 'absolute',
-                        top: '160px',
+                        top: '100px',
                         left: '500px',
                         right: '300px',
-                        bottom: '100px',
+                        bottom: '50px',
                         border: '1px solid #ccc',
                         background: '#fff',
                         overflow: 'auto',
@@ -151,52 +201,58 @@ export default function EventCardCreate({ eventCard }) {
                         borderRadius: '25px',
                         outline: 'none',
                         padding: '20px',
-                        borderWidth: '3px',
-                        borderColor: '#FF3131',
+                        borderWidth: '4px',
+                        borderColor: '#b9e8fc',
                     }
                 }}>
                 <h3 className="p-mb-10 p-text-bold"
-                    style={{textAlign: 'center'}}>
+                    style={{textAlign: 'center', color: '#2196f3'}}>
                         Create New Event Card
                 </h3>
                 <br />
                 <form id="Event-Form" onSubmit={submitForm}>
                     <div className="p-fluid p-formgrid p-grid">
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">Event Name</label>
+                            <label className={styles.label}>Event Name</label>
                             <InputText id="firstname2" type="text" 
                                 onChange={e => setNewEventCard ({ ...newEventCard, Event_name: e.target.value })}/>
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="lastname2">Account Name</label>
-                            <InputText id="lastname2" type="text"
-                                onChange={e => setNewEventCard ({ ...newEventCard, Account_name: e.target.value })}/>
+                            <label className={styles.label}>Account Name</label>
+                            <Dropdown value={selectedGameAccount} options={gameAccount} 
+                                optionLabel="Game_account_name" 
+                                filter showClear filterBy="Game_account_name" 
+                                placeholder="Select game account"                               
+                                onChange={onGameAccountChange} />
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">Type</label>
-                            <Dropdown value={selectedType} options={eventType} optionLabel="name" filter showClear filterBy="name" placeholder="Select a Type"
-                                 onChange={onEventTypeChange} />
+                            <label className={styles.label}>Type</label>
+                            <Dropdown value={selectedType} options={eventType} 
+                                optionLabel="name" 
+                                filter showClear filterBy="name" 
+                                placeholder="Select a Type"
+                                onChange={onEventTypeChange} />
                         </div>
                     </div>
 
                     <div className="p-fluid p-formgrid p-grid">
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">Cost</label>
+                            <label className={styles.label}>Cost</label>
                             <InputNumber inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
                                 onChange={e => setNewEventCard ({ ...newEventCard, Cost: e.value })}/>
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="lastname2">Down Pay</label>
+                            <label className={styles.label}>Down Pay</label>
                             <InputNumber inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
                                 onChange={e => setNewEventCard ({ ...newEventCard, Down_pay: e.value })}/>
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="lastname2">Dept</label>
+                            <label className={styles.label}>Dept</label>
                             <InputNumber inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
                                 onChange={e => setNewEventCard ({ ...newEventCard, Dept: e.value })}/>
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">CashFlow</label>
+                            <label className={styles.label}>CashFlow</label>
                             <InputNumber inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
                                 onChange={e => setNewEventCard ({ ...newEventCard, Cash_flow: e.value })}/>
                         </div>
@@ -204,18 +260,20 @@ export default function EventCardCreate({ eventCard }) {
 
                     <div className="p-fluid p-formgrid p-grid">
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">Trading Range</label>
+                            <label className={styles.label}>Trading Range</label>
                             <InputText id="firstname2" type="text"
                                 onChange={e => setNewEventCard ({ ...newEventCard, Trading_range: e.target.value })}/>
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="firstname2">Action</label>
-                            <Dropdown value={selectedAction} options={action}  optionLabel="name" filter showClear filterBy="name" placeholder="Select an action"
-                                 onChange={onActionChange}                                
-                                />
+                            <label className={styles.label}>Action</label>
+                            <Dropdown value={selectedAction} options={action} 
+                                optionLabel="name" 
+                                filter showClear filterBy="name" 
+                                placeholder="Select an action"
+                                onChange={onActionChange} />
                         </div>
                         <div className="p-field p-col">
-                            <label htmlFor="lastname2">Event Image</label>
+                            <label className={styles.label}>Event Image</label>
                             <InputText id="event-img" type="file" name="img" required
                                 onChange={onchangeImg}
                             />
@@ -224,7 +282,7 @@ export default function EventCardCreate({ eventCard }) {
                     </div>
 
                     <div className="p-fluid p-formgrid p-grid">
-                        <label htmlFor="lastname2">Event Description</label>
+                        <label className={styles.label}>Event Description</label>
                         <InputTextarea  rows={5} cols={30} autoResize 
                             onChange={e => setNewEventCard ({ ...newEventCard, Event_description: e.target.value })}/>
                     </div>

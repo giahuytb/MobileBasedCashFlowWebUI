@@ -38,9 +38,9 @@ export default function ViewJobCard() {
 
     return (
         <div>
-        {console.log(jobCardList)}
+        {/* {console.log(jobCardList)} */}
             <JobCardList
-                eventCardList={jobCardList}
+                jobCardList={jobCardList}
             />
         </div>
     )

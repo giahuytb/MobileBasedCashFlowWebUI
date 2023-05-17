@@ -38,6 +38,12 @@ const GetEventCardByPaging = (pageIndex, pageSize) =>
 const GetEventCardById = (id) => 
         http.get(`api/eventcards/${id}`, {headers: authHeader() });
 
+const GetEventCardByTypeId = (id) => 
+        http.get(`api/eventcards/type-id/${id}`, {headers: authHeader() });
+
+const GetEventCardByModId = (id) => 
+        http.get(`api/eventcards/mod-id/${id}`, {headers: authHeader() });
+
 const CreateEventCard = (data) => 
         http.post(`api/eventcards`, data, {headers: authHeader() });
 
@@ -46,6 +52,9 @@ const UpdateEventCard = (id, data) =>
 
 const DeleteEventCard = (id) => 
         http.delete(`api/eventcards/${id}`, {headers: authHeader() });
+
+const InAcctiveEventCard = (id) => 
+        http.put(`api/eventcards/inactive/${id}`, {headers: authHeader() });
 
 // Job Card
 const GetAllJobCard = () => 
@@ -66,6 +75,25 @@ const UpdateJobCard = (id, data) =>
 const DeleteJobCard = (id) => 
         http.delete(`api/jobcards/${id}` , {headers: authHeader() });
 
+
+const GetAllGameAccount = () => 
+        http.get(`api/gameaccounts/all`, {headers: authHeader() });
+
+const GetGameAccountByPaging = (pageIndex, pageSize) => 
+        http.get(`api/gameaccounts/all`, {params: {pageIndex, pageSize}}, {headers: authHeader() });
+
+const GetGameAccountById = (id) => 
+        http.get(`api/gameaccounts/all/${id}`, {headers: authHeader() });
+
+const CreateGameAccount = (data) => 
+        http.post(`api/gameaccounts/all`, data, {headers: authHeader() });
+
+const UpdateGameAccount = (id, data) => 
+        http.put(`api/gameaccounts/all/${id}`, data, {headers: authHeader() });
+
+const DeleteJGameAccount = (id) => 
+        http.delete(`api/gameaccounts/all/${id}` , {headers: authHeader() });       
+
 export default{
     // User
     Authenticate,
@@ -83,9 +111,12 @@ export default{
     GetAllEventCard,
     GetEventCardByPaging,
     GetEventCardById,
+    GetEventCardByTypeId,
+    GetEventCardByModId,
     CreateEventCard,
     UpdateEventCard,
     DeleteEventCard,
+    InAcctiveEventCard,
 
     // Job Card
     GetAllJobCard,
@@ -93,5 +124,14 @@ export default{
     GetJobCardById,
     CreateJobCard,
     UpdateJobCard,
-    DeleteJobCard
+    DeleteJobCard,
+
+    // Game Account
+    GetAllGameAccount,
+    GetGameAccountByPaging,
+    GetGameAccountById,
+    CreateGameAccount,
+    UpdateGameAccount,
+    DeleteJGameAccount,
+    
 }
