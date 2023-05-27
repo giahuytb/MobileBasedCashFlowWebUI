@@ -1,27 +1,36 @@
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import PropTypes from 'prop-types';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Link } from 'react-router-dom';
 
 import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
 import { Tag } from 'primereact/tag';
+import { Helmet } from 'react-helmet-async';
+import { Container, Stack, Typography } from '@mui/material';
+
+
+
+
+import JobCardUpdate from './JobCardUpdate';
 
 JobCardList.propTypes = {
     jobCardList: PropTypes.array,
+    updateJobCard: PropTypes.func,
 }
 
 export default function JobCardList({
     jobCardList,
+    updateJobCard,
 }){
-    const [searchText, setSearchText] = useState("");
     const [jobCard, setJobCard] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState('');
     const [loading, setLoading] = useState(true);
+    const dt = useRef(null);
 
     const converStatus = (typeId) =>{
         switch (typeId) {
@@ -54,7 +63,7 @@ export default function JobCardList({
     }, [jobCardList, jobCard]);
 
     const imageCustom = (rowData) => (
-        <img style={{ width: '40px', height: '1%' }}
+        <img style={{ width: '30px', height: '1%' }}
             src={`/assets/images/jobcards/${rowData.Image_url}.png`}
             alt={rowData.Image_url}
             loading='lazy'
@@ -63,32 +72,26 @@ export default function JobCardList({
 
     const customButton = (rowData) => (
         <div style={{ display: 'flex' }}>
-            <Link style={{ paddingRight: '15px' }}
-                to={{
-                    pathname: "EventDetail",
-                    state: rowData
-                }}>
-                <i className="fas fa-eye" />
-            </Link>
+            <JobCardUpdate 
+                    data = {rowData}
+                    updateJobcard ={updateJobCard}/>
         </div>
     )
 
 
-    const onSearchTextChange = (e) => {
-        const {value} = e.target;
-        setSearchText(value);
+    const reset = () => {
+        setGlobalFilter('');
+        dt.current.reset();
     }
-
-    const search = () => (
-        <div className="p-d-flex p-jc-between">
+    const header = (
+        <div className="table-header">
+            <Button type="button" label="Clear" className="p-button-outlined" icon="pi pi-filter-slash" onClick={reset} />
             <span className="p-input-icon-left">
-                <InputText value={searchText} onChange={onSearchTextChange} placeholder="Keyword Search" />
-                <Button style={{ height: '42px' }}>
-                    <i className="pi pi-search" />
-                </Button>
+                <i className="pi pi-search" />
+                <InputText type="search" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" />
             </span>
         </div>
-    )
+    );
 
     const statusBodyTemplate = (rowData) => <Tag value={converStatus(rowData.Status)} 
                                                 style ={getStatusBackground(rowData.Status)} />;
@@ -99,17 +102,32 @@ export default function JobCardList({
 
     return (
         <div>
+            {/* {console.log(jobCard)} */}
+            <Helmet>
+                <title>Job Card | CashFlow </title>
+            </Helmet>
+
+            <Container>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                    <Typography variant="h4" gutterBottom>
+                        Job Card
+                    </Typography>
+                </Stack>               
+            </Container>
+
             <div id="wrapper"  >
                 <div className="container-fluid">
                     <div className="card shadow mb-4">
-                        <DataTable value={jobCard}paginator responsiveLayout="scroll" 
+                        <DataTable value={jobCard} paginator responsiveLayout="scroll" 
+                            showGridlines stripedRows 
                             paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
                             rows={4} 
-                            rowsPerPageOptions={[5, 10, 20]}
+                            rowsPerPageOptions={[4, 10, 20]}
                             paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
                             loading = {loading}
-                            header={search}>
+                            header={header} ref={dt}
+                            globalFilter={globalFilter}>
                             <Column field="Job_card_name" header="Job Name"  />
                             <Column header="Image" body={imageCustom} />
                             <Column field="Children_cost" header="Children Cost" /> 

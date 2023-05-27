@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 
 import { Helmet } from 'react-helmet-async';
 import { DataTable } from 'primereact/datatable';
@@ -9,19 +9,23 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Typography, Container, Stack} from '@mui/material';
+import DreamUpdate from './DreamUpdate';
 
 
 
 DreamList.propTypes = {
      dreamList: PropTypes.array,
+     updateDream: PropTypes.func,
 }
 
 export default function DreamList({
     dreamList,
+    updateDream
 }){
-    const [searchText, setSearchText] = useState("");
     const [dream, setDream] = useState([]);
     const [loading, setLoading] = useState(true);
+    const dt = useRef(null);
+    const [globalFilter, setGlobalFilter] = useState('');
 
     const convertType = (typeId) =>{
         switch (typeId) {
@@ -45,58 +49,46 @@ export default function DreamList({
         }
     };
 
-    
-
-     useEffect(() => {     
-        setDream(dreamList);
-         if(dream.length > 0){
-             setLoading(false);
-         }        
-     }, [dreamList, dream]);
-   
-     const handleOnDelete = (e, rowData) => {
-         e.preventDefault();
-         console.log(rowData);
-        //  deleteEventCard(rowData.id);
-     };           
+    useEffect(() => {     
+    setDream(dreamList);
+        if(dream.length > 0){
+            setLoading(false);
+        }        
+    }, [dreamList, dream]);
+      
 
      const customButton = (rowData) => (
              <div style={{ display: 'flex' }}>
-                 {/* <EventUpdate
+                 <DreamUpdate
                      data = {rowData}
-                     updateEventCard = {updateEventCard}
-                     gameAccountList = {gameAccountList}
-                 /> */}
-                 <a 
-                     href="#!" 
-                     onClick={(e) => handleOnDelete(e, rowData)} >
-                     <i className="fa fa-trash" aria-hidden="true" />
-                 </a>
-                 
+                     updateDream = {updateDream}
+                 />
              </div>
          )   
 
-     const onSearchTextChange = (e) => {
-         const {value} = e.target;
-         setSearchText(value);
+    const paginatorLeft = <Button type="button" className="p-button-text" />;
+    const paginatorRight = <Button type="button" className="p-button-text" />;
+
+    const reset = () => {
+        setGlobalFilter('');
+        dt.current.reset();
     }
-    
-     const search = () => (
-             <div className="p-d-flex p-jc-between">
-                 <span className="p-input-icon-left">
-                 <form >              
-                     <InputText value={searchText} placeholder="name" onChange={onSearchTextChange}/>
-                     <Button label="Search" />
-                 </form>
-                 </span>
-             </div>
-    )
+
+    const header = (
+        <div className="table-header">
+            <Button type="button" label="Clear" className="p-button-outlined" icon="pi pi-filter-slash" onClick={reset} />
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" />
+            </span>
+        </div>
+    );
+
 
     const statusBodyTemplate = (rowData) => <Tag value={convertType(rowData.Status)} style ={getSeverity(rowData.Status)} />;
 
      return (
          <div>
-            {console.log(dream)}
             <Helmet>
                 <title>Dream | CashFlow </title>
             </Helmet>
@@ -113,12 +105,15 @@ export default function DreamList({
             <div id="wrapper" style={{marginLeft: 50, marginRight: 50}}>
                  <div className="datatable-style-demo">
                      <div className="card">
-                         <DataTable value={dream} loading= {loading} className='border-solid' style={{background: 'white'}}
-                             stripedRows
-                             header={search}
+                         <DataTable responsiveLayout="scroll" paginator stripedRows
+                             paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                             rows={4} rowsPerPageOptions={[4, 10, 20]}
+                             paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                             value={dream} loading= {loading} className='border-solid' style={{background: 'white'}}
+                             header={header} ref={dt}
+                             globalFilter={globalFilter}
                              emptyMessage="No Record found."
-                             paginator rows={4}
-                             totalRecords={dream.length}
                              >
                              <Column field="Name" header="Event Name" sortable />
                              <Column field="Cost" header="Cost"/>

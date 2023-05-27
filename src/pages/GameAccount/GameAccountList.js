@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 
 import { Helmet } from 'react-helmet-async';
 import { DataTable } from 'primereact/datatable';
@@ -9,19 +9,26 @@ import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
 import { Typography, Container, Stack} from '@mui/material';
+import GameAccountCreate from './GameAccountCreate';
+import GameAccountUpdate from './GameAccountUpdate';
 
 
 
 GameAccountList.propTypes = {
      gameAccountList: PropTypes.array,
+     updateGameAccount : PropTypes.func,
+     createGameAccount : PropTypes.func,
 }
 
 export default function GameAccountList({
     gameAccountList,
+    updateGameAccount,
+    createGameAccount,
 }){
-    const [searchText, setSearchText] = useState("");
     const [gameAccount, setGameAccount] = useState([]);
+    const [globalFilter, setGlobalFilter] = useState('');
     const [loading, setLoading] = useState(true);
+    const dt = useRef(null);
 
     const converStatus = (typeId) =>{
         switch (typeId) {
@@ -30,7 +37,7 @@ export default function GameAccountList({
             case false:
                 return "Inactive";
             default:
-                return "Other";
+                return "Active";
         }
     };
 
@@ -41,34 +48,19 @@ export default function GameAccountList({
             case false:
                 return {background : '#FF0000',};
             default:
-                return {background : 'black',};
-        }
-    };
-
-    const convertType = (typeId) =>{
-        switch (typeId) {
-            case 0:
-                return "Income";
-            case 1:
-                return "Expense";
-            case 2:
-                return "Asset";
-            case 3:
-                return "Dept";
-            default:
-                return "Dept";
+                return {background : '#2196f3',};
         }
     };
 
     const getTypeBackground = (status) => {
         switch (status) {
-            case 0:
+            case "Income":
                 return {background : '#2196f3'};
-            case 1:
+            case "Expense":
                 return {background : '#FF0000'};
-            case 2:
+            case "Dept":
                 return {background : '#00FF00',color : 'black'};
-            case 3:
+            case "Asset":
                 return {background : '#7B68EE',};
             default:
                 return {background : 'black',};
@@ -76,57 +68,48 @@ export default function GameAccountList({
     };
 
     
-
      useEffect(() => {     
         setGameAccount(gameAccountList);
          if(gameAccount.length > 0){
              setLoading(false);
          }        
-     }, [gameAccountList, gameAccount]);
-   
-     const handleOnDelete = (e, rowData) => {
-         e.preventDefault();
-         console.log(rowData);
-        //  deleteEventCard(rowData.id);
-     };           
+     }, [gameAccountList, gameAccount]);         
 
-     const customButton = (rowData) => (
-             <div style={{ display: 'flex' }}>
-                 {/* <EventUpdate
-                     data = {rowData}
-                     updateEventCard = {updateEventCard}
-                     gameAccountList = {gameAccountList}
-                 /> */}
-                 <a 
-                     href="#!" 
-                     onClick={(e) => handleOnDelete(e, rowData)} >
-                     <i className="fa fa-trash" aria-hidden="true" />
-                 </a>
-                 
-             </div>
-         )   
-
-     const onSearchTextChange = (e) => {
-         const {value} = e.target;
-         setSearchText(value);
-    }
-    
-     const search = () => (
-             <div className="p-d-flex p-jc-between">
-                 <span className="p-input-icon-left">
-                 <form >              
-                     <InputText value={searchText} placeholder="name" onChange={onSearchTextChange}/>
-                     <Button label="Search" />
-                 </form>
-                 </span>
-             </div>
-    )
+    const customButton = (rowData) => (
+            <div style={{ display: 'flex' }}>
+            <GameAccountUpdate
+                data = {rowData}
+                updateGameAccount = {updateGameAccount}
+                gameAccountList = {gameAccountList}
+            />
+            </div>
+        )    
 
     const statusBodyTemplate = (rowData) => <Tag value={converStatus(rowData.Status)} 
                                                 style ={getStatusBackground(rowData.Status)} />;
 
-    const typeBodyTemplate = (rowData) => <Tag value={convertType(rowData.Game_account_type_id)} 
-                                                style ={getTypeBackground(rowData.Game_account_type_id)} />;
+    const typeBodyTemplate = (rowData) => <Tag value={rowData.Game_account_type} 
+                                                style ={getTypeBackground(rowData.Game_account_type)} />;
+
+    const paginatorLeft = <Button type="button" className="p-button-text" />;
+    const paginatorRight = <Button type="button" className="p-button-text" />;
+
+    const reset = () => {
+        setGlobalFilter('');
+        dt.current.reset();
+    }
+
+    const header = (
+        <div className="table-header">
+            <Button type="button" label="Clear" className="p-button-outlined" icon="pi pi-filter-slash" onClick={reset} />
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" />
+            </span>
+        </div>
+    );
+
+    
 
      return (
          <div>
@@ -139,33 +122,39 @@ export default function GameAccountList({
                     <Typography variant="h4" gutterBottom>
                         Game Account
                     </Typography>
+                    <GameAccountCreate createGameAccount = {createGameAccount}/> 
                 </Stack>               
             </Container>
 
  
             <div id="wrapper" style={{marginLeft: 50, marginRight: 50}}>
-                 <div className="datatable-style-demo">
-                     <div className="card">
-                         <DataTable value={gameAccount} loading= {loading} className='border-solid' style={{background: 'white'}}
-                             stripedRows
-                             header={search}
-                             emptyMessage="No Record found."
-                             paginator rows={4}
-                             >
-                             <Column field="Game_account_name" header="Account Name" sortable />
-                             <Column field="Game_account_type_id" 
-                                     header="Type"
-                                     body={typeBodyTemplate} />
-                             <Column field="Status" 
-                                     header="Status" 
-                                     showFilterMenu={false} 
-                                     body={statusBodyTemplate}  
-                                     />        
-                             <Column body={customButton}/>
-                         </DataTable>
-                     </div>
-                 </div>
-             </div> 
-         </div>
+                <div className="datatable-style-demo">
+                    <div className="card">
+                         <DataTable responsiveLayout="scroll" paginator
+                            paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                            currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                            rows={4} rowsPerPageOptions={[4, 10, 20]}
+                            paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                            value={gameAccount} loading= {loading} className='border-solid' style={{background: 'white'}}
+                            showGridlines stripedRows 
+                            header={header} ref={dt}
+                            globalFilter={globalFilter}
+                            emptyMessage="No Record found."                            
+                            >
+                            <Column field="Game_account_name" header="Account Name" sortable />
+                            <Column field="Game_account_type" 
+                                    header="Type"
+                                    body={typeBodyTemplate} />
+                            <Column field="Status" 
+                                    header="Status" 
+                                    showFilterMenu={false} 
+                                    body={statusBodyTemplate}  
+                                    />        
+                            <Column body={customButton}/>
+                        </DataTable>
+                    </div>
+                </div>
+            </div> 
+        </div>
      )
  }

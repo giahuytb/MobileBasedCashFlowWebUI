@@ -8,7 +8,7 @@ import GAMEMODE from '../_mock/products';
 
 // ----------------------------------------------------------------------
 
-export default function GameModePage() {
+export default function GameModPage() {
 
   return (
     <>

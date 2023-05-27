@@ -17,11 +17,11 @@ const navConfig = [
     icon: icon('ic_user'),
   },
   
-  {
-    title: 'Game Mode',
-    path: '/dashboard/gamemode',
-    icon: icon('ic_game'),
-  },
+  // {
+  //   title: 'Game Mod',
+  //   path: '/dashboard/gamemod',
+  //   icon: icon('ic_game'),
+  // },
   
   {
     title: 'Event Card',
@@ -30,7 +30,7 @@ const navConfig = [
   },
 
   {
-    title: 'Job Card',
+    title: 'Job',
     path: '/dashboard/jobcardlist',
     icon: icon('ic_jobcard'),
   },

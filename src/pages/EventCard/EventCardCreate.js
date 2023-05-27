@@ -14,6 +14,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {Button as MyButton} from '@mui/material';
 
+import { Tag } from 'primereact/tag';
 import { storage } from "../../firebase";
 import ApiService from '../../api/ApiService'
 
@@ -22,19 +23,18 @@ import Iconify from '../../components/iconify';
 
 
 EventCardCreate.propTypes = {
-    eventCard: PropTypes.func,
+    createEventCard: PropTypes.func,
 }
-export default function EventCardCreate({ eventCard }) {
+export default function EventCardCreate({ createEventCard }) {
 
-    
-    const [modalIsOpen, setModalIsOpen] = useState(false);
     const toast = useRef(null);
+    const [modalIsOpen, setModalIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [imgMesage, setImgMesage] = useState("");
     const [newEventCard, setNewEventCard] = useState(
         {
         Event_name: "", Image_url: "", Account_name: "Empty", Cost: "", Down_pay: "", Dept: "", 
-        Cash_flow: "", Trading_range: "", Event_description: "", Event_type_id: "",  Action: "", Game_mod_id : 1,
+        Cash_flow: "", Trading_range: "", Event_description: "", Event_type: "",  Action: "", Game_mod_id : 1,
         });
     const [file, setFile] = useState([])
     const validExt = ["jpg", "png", "jpeg"];
@@ -43,6 +43,23 @@ export default function EventCardCreate({ eventCard }) {
     const [selectedType, setSelectedType] = useState(null);
     const [selectedGameAccount, setSelectedGameAccount] = useState(null);
     const [gameAccount, setGameAccount] = useState(null);
+
+    const getBackGroundColor = (option) => {
+        switch (option) {
+            case "Big Deal":
+                return {background : '#2196f3', borderRadius: 10};
+            case "Small Deal":
+                return {background : '#00FF00', color : 'black', borderRadius: 10};
+            case "DooDad":
+                return {background : '#FF0000', borderRadius: 10};
+            case "Market":
+                return {background : '#FFA500', borderRadius: 10};
+            case "Opotunity":
+                return {background : '#7B68EE', borderRadius: 10};
+            default:
+                return {background : 'black', borderRadius: 10};
+        }
+    };
 
     const action = [
         { name: 'Buy', code: 1 },
@@ -53,12 +70,8 @@ export default function EventCardCreate({ eventCard }) {
     ];
 
     const eventType = [
-        { name: 'Big Deal', code: 1 },
-        { name: 'Small Deal', code: 2 },
-        { name: 'Doodad', code: 3 },
-        { name: 'Market', code: 4 },
-        { name: 'Opotunity', code: 5 },
-    ];
+        "Big Deal", "Small Deal", "DooDad", "Market", "Opotunity"
+    ]; 
 
     const GetAllGameAccount = async () => {
         try {
@@ -92,7 +105,7 @@ export default function EventCardCreate({ eventCard }) {
     const onEventTypeChange = (e) => {
         setSelectedType(e.value);
         if(e.value !== undefined){
-            setNewEventCard ({ ...newEventCard, Event_type_id: e.value.code });
+            setNewEventCard ({ ...newEventCard, Event_type: e.value });
         }     
     }
 
@@ -112,7 +125,6 @@ export default function EventCardCreate({ eventCard }) {
     }
 
     const handleIconClick = useCallback(() => {
-        console.log(gameAccount);
         setModalIsOpen(true);
         // GetAllGameAccount();
       // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,13 +133,13 @@ export default function EventCardCreate({ eventCard }) {
     useEffect(() => {
         // console.log(newEventCard);
         if(newEventCard.Image_url !== ""){
-            eventCard(newEventCard);
+            createEventCard(newEventCard);
         }
         setLoading(false);
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [newEventCard.Image_url]);
 
-        useEffect(() => {
+    useEffect(() => {
         GetAllGameAccount();   
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -136,8 +148,8 @@ export default function EventCardCreate({ eventCard }) {
         setLoading(true);
         e.preventDefault();
         const imageRef = ref(storage, `/Image/${file.name}`);
-        uploadBytes(imageRef, file).then( async (snapshot) => {
-            console.log("Uploaded Image")
+        uploadBytes(imageRef, file).then( async (snapshot) => {           
+            toast.current.show({severity: 'info', summary: 'Success', detail: 'Uploaded Image', life: 4000});
             await getDownloadURL(snapshot.ref).then(url => setNewEventCard({...newEventCard, Image_url:url }));
         });
         setModalIsOpen(true);
@@ -151,7 +163,8 @@ export default function EventCardCreate({ eventCard }) {
             const imgExtention = file.name.substring(posOfDot);
             const result = validExt.includes(imgExtention);
             if (!result) {
-                setImgMesage("Select File Is Not Image......")
+                setImgMesage("Select File Is Not Image")
+                toast.current.show({severity: 'error', summary: 'Error', detail: 'Select File Is Not Image', life: 4000});
                 document.getElementById("event-img").value = "";
                 return false;
             } 
@@ -159,6 +172,9 @@ export default function EventCardCreate({ eventCard }) {
         }
         return true;
     }
+
+    const statusItemTemplate = (option) => <Tag value={option} 
+                                                style={getBackGroundColor(option)} />;
 
     return (
         <div style={{marginBottom: 10}}>
@@ -226,10 +242,10 @@ export default function EventCardCreate({ eventCard }) {
                                 onChange={onGameAccountChange} />
                         </div>
                         <div className="p-field p-col">
-                            <label className={styles.label}>Type</label>
+                            <label className={styles.label}>Event Type</label>
                             <Dropdown value={selectedType} options={eventType} 
-                                optionLabel="name" 
-                                filter showClear filterBy="name" 
+                                itemTemplate={statusItemTemplate} 
+                                showClear  
                                 placeholder="Select a Type"
                                 onChange={onEventTypeChange} />
                         </div>
@@ -292,7 +308,7 @@ export default function EventCardCreate({ eventCard }) {
                             onClick={() => setModalIsOpen(false)}
                             style={{marginRight: 20}} />
 
-                        <Button type="submit" label="Submit" loading={loading} />
+                        <Button type="submit" label="Create" loading={loading} />
                     </div>
 
                 </form>

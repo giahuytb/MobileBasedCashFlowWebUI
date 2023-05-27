@@ -8,10 +8,10 @@ import SimpleLayout from './layouts/simple';
 import UserPage from './pages/User/UserPage';
 import LoginPage from './pages/User/LoginPage';
 import Page404 from './pages/Page404';
-import DashboardAppPage from './pages/DashboardAppPage';
+import DashboardAppPage from './pages/DashboardPage/DashboardAppPage';
 import ViewEventCard from './pages/EventCard/index';
 import ViewJobCard from './pages/JobCard/index';
-import GameModePage from './pages/GameMode';
+import GameModPage from './pages/GameMod';
 import ViewDream from './pages/Dream';
 import ViewGameAccount from './pages/GameAccount';
 import ViewAsset from './pages/Asset';
@@ -27,7 +27,8 @@ export default function Router() {
   const roles = localStorage.getItem("user");
   // Check if the user is authenticated before rendering the dashboard
   useEffect(() => {
-    console.log("On Checking Access Token...");
+    // console.log(localStorage.getItem('user'))
+    // console.log(localStorage.getItem('authToken'))
     if (!authToken && roles !== 'Admin') {
       navigate("/login");
     }
@@ -47,7 +48,7 @@ export default function Router() {
         { element: <Navigate to="/dashboard/app" />, index: true},
         { path: 'app', element: <DashboardAppPage /> },
         { path: 'user', element: <UserPage /> },
-        { path: 'gamemode', element: <GameModePage /> },
+        { path: 'gamemod', element: <GameModPage /> },
         { path: 'eventcardlist', element: <ViewEventCard/>},
         { path: 'jobcardlist', element: <ViewJobCard/>},
         { path: 'dreamlist', element: <ViewDream/>},

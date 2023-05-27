@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-import React, { useEffect, useState} from 'react'
+import React, { useEffect, useState, useRef} from 'react'
 import PropTypes from 'prop-types';
 import Modal from 'react-modal';
 
@@ -8,9 +8,12 @@ import { InputNumber } from 'primereact/inputnumber';
 import { Button } from 'primereact/button';
 import { InputTextarea } from 'primereact/inputtextarea';
 import { Dropdown } from 'primereact/dropdown';
+import { Tag } from 'primereact/tag';
+import { Toast } from 'primereact/toast';
 
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 // hook
+
 import useResponsive from '../../hooks/useResponsive';
 import { storage } from "../../firebase";
 import styles from '../../mystyle.module.css'
@@ -23,15 +26,17 @@ EventUpdate.propTypes = {
 }
 export default function EventUpdate({ data, updateEventCard, gameAccountList }) {
 
+    const toast = useRef(null);
     const isDesktop = useResponsive('up', 'lg');
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [isShowGameAccount, setIsShowGameAccount] = useState(true);
     const [imgMesage, setImgMesage] = useState("");
     const [newEventCard, setNewEventCard] = useState(
         {
         id: data.id, Event_name: data.Event_name, Image_url: data.Image_url, Account_name: data.Account_name, 
         Cost: data.Cost, Down_pay: data.Down_pay, Dept: data.Dept, Cash_flow: data.Cash_flow, Trading_range: data.Trading_range, 
-        Event_description: data.Event_description, Event_type_id: data.Event_type_id,  Action: data.Action, Game_mod_id: data.Game_mod_id,
+        Event_description: data.Event_description, Event_type: data.Event_type,  Action: data.Action, Game_mode_id: data.Game_mode_id,
         });
     const [file, setFile] = useState(null)
     const validExt = ["jpg", "png", "jpeg"];
@@ -53,12 +58,42 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
     ];
 
     const eventType = [
-        { name: 'Big Deal', code: 1 },
-        { name: 'Small Deal', code: 2 },
-        { name: 'Doodad', code: 3 },
-        { name: 'Market', code: 4 },
-        { name: 'Opotunity', code: 5 },
-    ];
+        "Big Deal", "Small Deal", "DooDad", "Market", "Opotunity"
+    ];  
+
+    const getBackGroundColor = (option) => {
+        switch (option) {
+            case "Big Deal":
+                return {background : '#2196f3', borderRadius: 10};
+            case "Small Deal":
+                return {background : '#00FF00', color : 'black', borderRadius: 10};
+            case "DooDad":
+                return {background : '#FF0000', borderRadius: 10};
+            case "Market":
+                return {background : '#FFA500', borderRadius: 10};
+            case "Opotunity":
+                return {background : '#7B68EE', borderRadius: 10};
+            default:
+                return {background : 'black', borderRadius: 10};
+        }
+    };
+
+    const convertToInt = (option) => {
+        switch (option) {
+            case "Big Deal":
+                return 1;
+            case "Small Deal":
+                return 2;
+            case "DooDad":
+                return 3;
+            case "Market":
+                return 4;
+            case "Opotunity":
+                return 5;
+            default:
+                return 6;
+        }
+    };
 
     useEffect(() => {
         if(check === true){
@@ -69,8 +104,13 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
     }, []);
 
     useEffect(() => {
-        setSelectedType(eventType[newEventCard.Event_type_id-1]);
+        // console.log(data);
+        setSelectedType(eventType[(convertToInt(newEventCard.Event_type)) -1]);
         setSelectedAction(action[newEventCard.Action-1]);
+        setSelectedGameAccount(found);
+        if(data.Event_type === "DooDad" || data.Event_type === "Opotunity"){
+            setIsShowGameAccount(false)
+        }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -81,9 +121,10 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
     }
 
     const onEventTypeChange = (e) => {
+        // console.log(e.value);
         setSelectedType(e.value);
         if(e.value !== undefined){
-            setNewEventCard ({ ...newEventCard, Event_type_id: e.value.code });
+            setNewEventCard ({ ...newEventCard, Event_type: e.value });
         }     
     }
 
@@ -96,9 +137,9 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
 
     const onGameAccountChange= (e) => {
         setSelectedGameAccount(e.value);
-        console.log(e.value);
+        // console.log(e.value);
         if(e.value !== undefined){          
-            setNewEventCard ({ ...newEventCard, gameAccount: e.value });
+            setNewEventCard ({ ...newEventCard, Account_name: e.value.Game_account_name});
         }
     }
 
@@ -119,11 +160,11 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
     const submitForm = async (e) => {
         setLoading(true);
         e.preventDefault();
-        console.log(file)
+        console.log(loading);
         if(file !== null){
             const imageRef = ref(storage, `/Image/${file.name}`);
             uploadBytes(imageRef, file).then( async (snapshot) => {
-                console.log("Uploaded Image")
+                toast.current.show({severity: 'info', summary: 'Success', detail: 'Uploaded Image'});
                 await getDownloadURL(snapshot.ref).then(url => setNewEventCard({...newEventCard, Image_url:url }));
             });
         }else{
@@ -141,7 +182,8 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
             const imgExtention = file.name.substring(posOfDot);
             const result = validExt.includes(imgExtention);
             if (!result) {
-                setImgMesage("Select File Is Not Image......")
+                setImgMesage("Select File Is Not Image")
+                toast.current.show({severity: 'error', summary: 'Error', detail: 'Select File Is Not Image'});
                 document.getElementById("event-img").value = "";
                 return false;
             } 
@@ -150,10 +192,14 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
         return true;
     }
 
+    const statusItemTemplate = (option) => <Tag value={option} 
+                                                style={getBackGroundColor(option)} />;
+
     return (
         <div>
-            {/* {console.log(data)}
-            {console.log(gameAccount)} */}
+            {/* {console.log(data)} */}
+            {/* {console.log(newEventCard)} */}
+            <Toast ref={toast}/>
             <a href="#!" onClick={handleIconClick} style={{ marginRight: '15px' }}>
                 <i className="fas fa-edit fa" />
             </a>
@@ -192,7 +238,7 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                 }}>
                 <h3 className="p-mb-10 p-text-bold"
                     style={{textAlign: 'center', color: '#2196f3'}}>
-                        Edit Event Card Desktop
+                        Edit Event Card
                 </h3>
                 <br />
                 <form id="Event-Form" onSubmit={submitForm}>
@@ -203,24 +249,30 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                                 value = {newEventCard.Event_name}
                                 onChange={e => setNewEventCard ({ ...newEventCard, Event_name: e.target.value })}/>
                         </div>
-                        <div className="p-field p-col">
+                        {isShowGameAccount ? (<div className="p-field p-col">
+                            {/* {console.log(selectedGameAccount)} */}
+                            {/* {console.log(data.Account_name)} */}
                             <label className={styles.label}>Account Name</label>
-                            <Dropdown value={found} options={gameAccount} 
+                            <Dropdown value={selectedGameAccount} options={gameAccount} 
                                 optionLabel="Game_account_name" 
                                 filter showClear filterBy="Game_account_name" 
                                 placeholder="Select game account"
                                 onChange={onGameAccountChange} />
                         </div>
+                        ) : (
+                        <></>
+                        )}
+                        
                         <div className="p-field p-col">
-                            <label className={styles.label}>Type</label>
+                            <label className={styles.label}>Event Type</label>
                             <Dropdown value={selectedType} options={eventType} 
-                                optionLabel="name" 
-                                filter showClear filterBy="name" 
+                                itemTemplate={statusItemTemplate}
+                                showClear      
                                 placeholder="Select a Type"
                                 onChange={onEventTypeChange} />
                         </div>
                     </div>
-
+                    
                     <div className="p-fluid p-formgrid p-grid">
                         <div className="p-field p-col">
                             <label className={styles.label}>Cost</label>
@@ -284,11 +336,15 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                             onClick={() => setModalIsOpen(false)}
                             style={{marginRight: 20}} />
 
-                        <Button type="submit" label="Submit" loading={loading} />
+                        <Button type="submit" label="Update" loading={loading} />
                     </div>
 
                 </form>
-            </Modal>): (<Modal          
+            </Modal>
+
+            ): (
+
+            <Modal          
                 isOpen={modalIsOpen}
                 ariaHideApp={false}
                 onRequestClose={() => setModalIsOpen(false)}
@@ -322,7 +378,7 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                 }}>
                 <h3 className="p-mb-10 p-text-bold"
                     style={{textAlign: 'center', color: '#a7d1e3'}}>
-                        Edit Event Card Tablet
+                        Edit Event Card
                 </h3>
                 <br />
                 <form id="Event-Form" onSubmit={submitForm}>
@@ -335,7 +391,7 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                         </div>
                         <div className="p-field p-col">
                             <label htmlFor="lastname2">Account Name</label>
-                            <Dropdown value={selectedGameAccount} options={gameAccount} 
+                            <Dropdown value={found} options={gameAccount} 
                                 optionLabel="Game_account_name" 
                                 filter showClear filterBy="Game_account_name" 
                                 placeholder="Select game account"
@@ -344,8 +400,7 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                         <div className="p-field p-col">
                             <label htmlFor="firstname2">Type</label>
                             <Dropdown value={selectedType} options={eventType} 
-                                optionLabel="name" 
-                                filter showClear filterBy="name" 
+                                showClear 
                                 placeholder="Select a Type"
                                 onChange={onEventTypeChange} />
                         </div>
@@ -414,7 +469,7 @@ export default function EventUpdate({ data, updateEventCard, gameAccountList }) 
                             onClick={() => setModalIsOpen(false)}
                             style={{marginRight: 20}} />
 
-                        <Button type="submit" label="Submit" loading={loading} />
+                        <Button type="submit" label="Update" loading={loading} />
                     </div>
 
                 </form>

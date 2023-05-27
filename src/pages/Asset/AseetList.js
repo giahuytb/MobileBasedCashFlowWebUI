@@ -1,152 +1,102 @@
-import React, { useState, useEffect } from 'react';
-import { classNames } from 'primereact/utils';
-import { FilterMatchMode, FilterOperator } from 'primereact/api';
+/* eslint-disable jsx-a11y/label-has-associated-control */
+import PropTypes from 'prop-types';
+import React, { useEffect, useState, useRef } from 'react'
+
+import { Helmet } from 'react-helmet-async';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
+import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Dropdown } from 'primereact/dropdown';
-import { MultiSelect } from 'primereact/multiselect';
-import { Tag } from 'primereact/tag';
-import { TriStateCheckbox } from 'primereact/tristatecheckbox';
+import { Typography, Container, Stack} from '@mui/material';
+import AssetUpdate from './AsserUpdate';
 
 
-export default function BasicFilterDemo() {
-    const [customers, setCustomers] = useState(null);
-    const [filters, setFilters] = useState({
-        global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-        name: { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        'country.name': { value: null, matchMode: FilterMatchMode.STARTS_WITH },
-        representative: { value: null, matchMode: FilterMatchMode.IN },
-        status: { value: null, matchMode: FilterMatchMode.EQUALS },
-        verified: { value: null, matchMode: FilterMatchMode.EQUALS }
-    });
+
+AssetList.propTypes = {
+    assetList: PropTypes.array,
+    updateAsset: PropTypes.func,
+}
+
+export default function AssetList({
+    assetList,
+    updateAsset
+}){
+    const [asset, setAsset] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [globalFilterValue, setGlobalFilterValue] = useState('');
-    const [representatives] = useState([
-        { name: 'Amy Elsner', image: 'amyelsner.png' },
-        { name: 'Anna Fali', image: 'annafali.png' },
-        { name: 'Asiya Javayant', image: 'asiyajavayant.png' },
-        { name: 'Bernardo Dominic', image: 'bernardodominic.png' },
-        { name: 'Elwin Sharvill', image: 'elwinsharvill.png' },
-        { name: 'Ioni Bowcher', image: 'ionibowcher.png' },
-        { name: 'Ivan Magalhaes', image: 'ivanmagalhaes.png' },
-        { name: 'Onyama Limba', image: 'onyamalimba.png' },
-        { name: 'Stephen Shaw', image: 'stephenshaw.png' },
-        { name: 'XuXue Feng', image: 'xuxuefeng.png' }
-    ]);
-    const [statuses] = useState(['unqualified', 'qualified', 'new', 'negotiation', 'renewal']);
+    const [globalFilter, setGlobalFilter] = useState('');
+    const dt = useRef(null);
 
-    const getSeverity = (status) => {
-        switch (status) {
-            case 'unqualified':
-                return 'danger';
+    useEffect(() => {     
+    setAsset(assetList);
+        if(asset.length > 0){
+            setLoading(false);
+        }        
+    }, [assetList, asset]);
+      
 
-            case 'qualified':
-                return 'success';
+     const customButton = (rowData) => (
+             <div style={{ display: 'flex' }}>
+                 <AssetUpdate
+                        data = {rowData}
+                        updateAsset = {updateAsset}
+                 />
+             </div>
+         )   
 
-            case 'new':
-                return 'info';
+    const paginatorLeft = <Button type="button" className="p-button-text" />;
+    const paginatorRight = <Button type="button" className="p-button-text" />;
 
-            case 'negotiation':
-                return 'warning';
+    const reset = () => {
+        setGlobalFilter('');
+        dt.current.reset();
+    }
 
-            case 'renewal':
-                return null;
-            default:
-                return null;
-        }
-    };
-
-
-    const getCustomers = (data) => [...(data || [])].map((d) => {
-            d.date = new Date(d.date);
-
-            return d;
-        });
-
-    const onGlobalFilterChange = (e) => {
-        const {value} = e.target;
-        const _filters = { ...filters };
-
-        _filters.global.value = value;
-
-        setFilters(_filters);
-        setGlobalFilterValue(value);
-    };
-
-    const renderHeader = () => (
-            <div className="flex justify-content-end">
-                <span className="p-input-icon-left">
-                    <i className="pi pi-search" />
-                    <InputText value={globalFilterValue} onChange={onGlobalFilterChange} placeholder="Keyword Search" />
-                </span>
-            </div>
-        );
-
-    const countryBodyTemplate = (rowData) => (
-            <div className="flex align-items-center gap-2">
-                <img alt="flag" src="https://primefaces.org/cdn/primereact/images/flag/flag_placeholder.png" className={`flag flag-${rowData.country.code}`} style={{ width: '24px' }} />
-                <span>{rowData.country.name}</span>
-            </div>
-        );
-
-    const representativeBodyTemplate = (rowData) => {
-        const {representative} = rowData;
-
-        return (
-            <div className="flex align-items-center gap-2">
-                <img alt={representative.name} src={`https://primefaces.org/cdn/primereact/images/avatar/${representative.image}`} width="32" />
-                <span>{representative.name}</span>
-            </div>
-        );
-    };
-
-    const representativesItemTemplate = (option) => (
-            <div className="flex align-items-center gap-2">
-                <img alt={option.name} src={`https://primefaces.org/cdn/primereact/images/avatar/${option.image}`} width="32" />
-                <span>{option.name}</span>
-            </div>
-        );
-
-    const statusBodyTemplate = (rowData) => <Tag value={rowData.status} severity={getSeverity(rowData.status)} />;
-
-    const statusItemTemplate = (option) => <Tag value={option} severity={getSeverity(option)} />;
-
-    const verifiedBodyTemplate = (rowData) => <i className={classNames('pi', { 'true-icon pi-check-circle': rowData.verified, 'false-icon pi-times-circle': !rowData.verified })} />;
-
-    const representativeRowFilterTemplate = (options) => (
-            <MultiSelect
-                value={options.value}
-                options={representatives}
-                itemTemplate={representativesItemTemplate}
-                onChange={(e) => options.filterApplyCallback(e.value)}
-                optionLabel="name"
-                placeholder="Any"
-                className="p-column-filter"
-                maxSelectedLabels={1}
-                style={{ minWidth: '14rem' }}
-            />
-        );
-
-    const statusRowFilterTemplate = (options) => (
-            <Dropdown value={options.value} options={statuses} onChange={(e) => options.filterApplyCallback(e.value)} itemTemplate={statusItemTemplate} placeholder="Select One" className="p-column-filter" showClear style={{ minWidth: '12rem' }} />
-        );
-
-    const verifiedRowFilterTemplate = (options) => <TriStateCheckbox value={options.value} onChange={(e) => options.filterApplyCallback(e.value)} />;
-
-    const header = renderHeader();
-
-    return (
-        <div className="card">
-            <DataTable value={customers} paginator rows={10} dataKey="id" filters={filters} filterDisplay="row" loading={loading}
-                    globalFilterFields={['name', 'country.name', 'representative.name', 'status']} header={header} emptyMessage="No customers found.">
-                <Column field="name" header="Name" filter filterPlaceholder="Search by name" style={{ minWidth: '12rem' }} />
-                <Column header="Country" filterField="country.name" style={{ minWidth: '12rem' }} body={countryBodyTemplate} filter filterPlaceholder="Search by country" />
-                <Column header="Agent" filterField="representative" showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '14rem' }}
-                    body={representativeBodyTemplate} filter filterElement={representativeRowFilterTemplate} />
-                <Column field="status" header="Status" showFilterMenu={false} filterMenuStyle={{ width: '14rem' }} style={{ minWidth: '12rem' }} body={statusBodyTemplate} filter filterElement={statusRowFilterTemplate} />
-                <Column field="verified" header="Verified" dataType="boolean" style={{ minWidth: '6rem' }} body={verifiedBodyTemplate} filter filterElement={verifiedRowFilterTemplate} />
-            </DataTable>
+    const header = (
+        <div className="table-header">
+            <Button type="button" label="Clear" className="p-button-outlined" icon="pi pi-filter-slash" onClick={reset} />
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" />
+            </span>
         </div>
     );
-}
+
+     return (
+         <div>
+            <Helmet>
+                <title>Asset | CashFlow </title>
+            </Helmet>
+
+            <Container>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                    <Typography variant="h4" gutterBottom>
+                        Asset
+                    </Typography>
+                </Stack>               
+            </Container>
+
+ 
+            <div id="wrapper" style={{marginLeft: 50, marginRight: 50}}>
+                 <div className="datatable-style-demo">
+                     <div className="card">
+                         <DataTable paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                             currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                             rows={4} rowsPerPageOptions={[4, 10, 20]}
+                             paginator stripedRows
+                             paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                             value={asset} loading= {loading} className='border-solid' style={{background: 'white'}}                                                     
+                             header={header} ref={dt}
+                             globalFilter={globalFilter}
+                             emptyMessage="No Record found."
+                             >
+                             <Column field="AssetName" header="Asset Name" sortable style={{ minWidth: '14rem' }} />
+                             <Column field="AssetPrice" header="Asset Price" style={{ minWidth: '14rem' }}/>
+                             <Column field="Description" header="Description"/>
+                             <Column body={customButton}/>
+                         </DataTable>
+                     </div>
+                 </div>
+             </div> 
+         </div>
+     )
+ }
