@@ -30,28 +30,6 @@ export default function GameAccountList({
     const [loading, setLoading] = useState(true);
     const dt = useRef(null);
 
-    const converStatus = (typeId) =>{
-        switch (typeId) {
-            case true:
-                return "Active";
-            case false:
-                return "Inactive";
-            default:
-                return "Active";
-        }
-    };
-
-    const getStatusBackground = (status) => {
-        switch (status) {
-            case true:
-                return {background : '#2196f3',};
-            case false:
-                return {background : '#FF0000',};
-            default:
-                return {background : '#2196f3',};
-        }
-    };
-
     const getTypeBackground = (status) => {
         switch (status) {
             case "Income":
@@ -84,9 +62,6 @@ export default function GameAccountList({
             />
             </div>
         )    
-
-    const statusBodyTemplate = (rowData) => <Tag value={converStatus(rowData.Status)} 
-                                                style ={getStatusBackground(rowData.Status)} />;
 
     const typeBodyTemplate = (rowData) => <Tag value={rowData.Game_account_type} 
                                                 style ={getTypeBackground(rowData.Game_account_type)} />;
@@ -145,11 +120,6 @@ export default function GameAccountList({
                             <Column field="Game_account_type" 
                                     header="Type"
                                     body={typeBodyTemplate} />
-                            <Column field="Status" 
-                                    header="Status" 
-                                    showFilterMenu={false} 
-                                    body={statusBodyTemplate}  
-                                    />        
                             <Column body={customButton}/>
                         </DataTable>
                     </div>
