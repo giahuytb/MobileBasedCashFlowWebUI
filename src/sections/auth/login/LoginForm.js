@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // @mui
-import { Link, Stack, IconButton, InputAdornment, TextField } from '@mui/material';
+import { Stack, IconButton, InputAdornment, TextField } from '@mui/material';
 import { LoadingButton } from '@mui/lab';
 // components
 import Iconify from '../../../components/iconify';
@@ -19,12 +19,12 @@ export default function LoginForm() {
   const [message, setMessage] = useState();
 
   const onChangeUserName = (e) => {
-    console.log(userName);
+    // console.log(userName);
     setUserName(e.target.value);
   }; 
 
   const onChangePassword = (e) => {
-    console.log(password);
+    // console.log(password);
     setPassword(e.target.value);
   };
 
@@ -73,9 +73,9 @@ export default function LoginForm() {
       </Stack>
 
       <Stack direction="row" alignItems="center" justifyContent="space-between" sx={{ my: 2 }}>
-        <Link variant="subtitle2" underline="hover">
+        {/* <Link variant="subtitle2" underline="hover">
           Forgot password?
-        </Link>
+        </Link> */}
       </Stack>
 
       <LoadingButton fullWidth size="large" type="submit" variant="contained" onClick={handleLogin} loading={loading}>

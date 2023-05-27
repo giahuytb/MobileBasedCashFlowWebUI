@@ -31,8 +31,8 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
       ref={ref}
       component="div"
       sx={{
-        width: 40,
-        height: 40,
+        width: 90,
+        height: 45,
         display: 'inline-flex',
         ...sx,
       }}
@@ -56,7 +56,7 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
           </linearGradient>
         </defs>
 
-        <g fill={PRIMARY_MAIN} fillRule="evenodd" stroke="none" strokeWidth="1">
+        {/* <g fill={PRIMARY_MAIN} fillRule="evenodd" stroke="none" strokeWidth="1">
           <path
             fill="url(#BG1)"
             d="M183.168 285.573l-2.918 5.298-2.973 5.363-2.846 5.095-2.274 4.043-2.186 3.857-2.506 4.383-1.6 2.774-2.294 3.939-1.099 1.869-1.416 2.388-1.025 1.713-1.317 2.18-.95 1.558-1.514 2.447-.866 1.38-.833 1.312-.802 1.246-.77 1.18-.739 1.111-.935 1.38-.664.956-.425.6-.41.572-.59.8-.376.497-.537.69-.171.214c-10.76 13.37-22.496 23.493-36.93 29.334-30.346 14.262-68.07 14.929-97.202-2.704l72.347-124.682 2.8-1.72c49.257-29.326 73.08 1.117 94.02 40.927z"
@@ -68,9 +68,14 @@ const Logo = forwardRef(({ disabledLink = false, sx, ...other }, ref) => {
           <path
             fill="url(#BG3)"
             d="M450 384c26.509 0 48-21.491 48-48s-21.491-48-48-48-48 21.491-48 48 21.491 48 48 48"
-          />
-        </g>
+          />    
+        </g> */}
       </svg>
+
+      <img
+        width="150px" height= "55px" 
+        src="https://firebasestorage.googleapis.com/v0/b/mobilebasedcashflow-img.appspot.com/o/Image%2FLogo.png?alt=media&token=688025f8-8918-4c76-818d-a9df9c8f5948"
+        alt="login"/>
     </Box>
   );
 

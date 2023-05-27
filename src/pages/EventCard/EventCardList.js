@@ -1,139 +1,176 @@
 /* eslint-disable jsx-a11y/label-has-associated-control */
-
 import PropTypes from 'prop-types';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
+
+import { Helmet } from 'react-helmet-async';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
 import { Tag } from 'primereact/tag';
+import { Dropdown } from 'primereact/dropdown';
 
-import 'primeicons/primeicons.css';
-import 'primereact/resources/themes/saga-blue/theme.css';
-import 'primereact/resources/primereact.css';
-import 'primeflex/primeflex.css';
-
+import { Typography, Container, Stack} from '@mui/material';
 import EventCardCreate from './EventCardCreate';
-import EventUpdate from './EevntCardUpdate';
+import EventUpdate from './EventCardUpdate';
+import EventCardDelete from './EventCardDelete';
 
 EventCardList.propTypes = {
-    eventCardList: PropTypes.array,
-    createEventCard : PropTypes.func,
-    updateEvent: PropTypes.func,
+     eventCardList: PropTypes.array,
+     createEventCard : PropTypes.func,
+     updateEventCard: PropTypes.func,
+     deleteEventCard: PropTypes.func,
+     gameAccountList: PropTypes.array,
 }
 
 export default function EventCardList({
     eventCardList,
     createEventCard,
-    updateEvent,
+    updateEventCard,
+    deleteEventCard,
+    gameAccountList,
 }){
-    const [searchText, setSearchText] = useState("");
     const [eventcard, setEventCard] = useState([]);
     const [loading, setLoading] = useState(true);
-    
-    const convertType = (typeId) =>{
-        switch (typeId) {
-            case 1:
-                return "Big Deal";
-            case 2:
-                return "Small Deal";
-            case 3:
-                return "DooDad";
-            case 4:
-                return "Market";
-            case 5:
-                return "Opotunity";
+    const [globalFilter, setGlobalFilter] = useState('');
+    const dt = useRef(null);
+
+    const eventType = [
+        "Big Deal", "Small Deal", "DooDad", "Market", "Opotunity"
+    ];    
+
+    const getBackGroundColor = (option) => {
+        switch (option) {
+            case "Big Deal":
+                return {background : '#2196f3', borderRadius: 10};
+            case "Small Deal":
+                return {background : '#00FF00', color : 'black', borderRadius: 10};
+            case "DooDad":
+                return {background : '#FF0000', borderRadius: 10};
+            case "Market":
+                return {background : '#FFA500', borderRadius: 10};
+            case "Opotunity":
+                return {background : '#7B68EE', borderRadius: 10};
             default:
-                return "Other";
+                return {background : 'black', borderRadius: 10};
         }
     };
 
-    const getSeverity = (status) => {
-        switch (status) {
-            case 1:
-                return {background : 'blue',};
-            case 2:
-                return {background : 'green',};
-            case 3:
-                return {background : 'red',};
-            case 4:
-                return {background : 'orange',};
-            case 5:
-                return {background : 'primary',};
-            default:
-                return {background : 'black',};
-        }
-    };
-
-    useEffect(() => {
+     
+    useEffect(() => {     
         setEventCard(eventCardList);
-        setLoading(false)
-    }, [eventCardList]);
+        if(eventcard.length > 0){
+           setLoading(false);
+        }        
+    }, [eventCardList, eventcard]);
 
 
     const imageCustom = (rowData) => (
-            <img style={{ width: '50px', height: '50px', borderRadius: '50%' }}
+            <img style={{ width: '90px', height: '50px', borderRadius: '50%' }}
                 src={rowData.Image_url}
                 alt={rowData.Image_url}
-                className="event-image" />)
-
+                loading='lazy'
+                className="event-image" />
+    )
+        
     const customButton = (rowData) => (
             <div style={{ display: 'flex' }}>
                 <EventUpdate
                     data = {rowData}
-                    updateEvent = {updateEvent}
+                    updateEventCard = {updateEventCard}
+                    gameAccountList = {gameAccountList}
                 />
+                <EventCardDelete
+                    id = {rowData.id}
+                    deleteEventCard = {deleteEventCard}
+                />
+                
             </div>
-        )      
+        ) 
 
-    const onSearchTextChange = (e) => {
-        const {value} = e.target;
-        setSearchText(value);
+    const statusBodyTemplate = (rowData) => <Tag value={rowData.Event_type} 
+                                                 style ={getBackGroundColor(rowData.Event_type)}/>;
+    
+    const statusItemTemplate = (option) => <Tag value={option} 
+                                                style={getBackGroundColor(option)} />;
+                                            
+
+    const reset = () => {
+        setGlobalFilter('');
+        dt.current.reset();
     }
-    
-    const statusBodyTemplate = (rowData) => <Tag value={convertType(rowData.Event_type_id)} style ={getSeverity(rowData.Event_type_id)} />;
-    
-    const search = () => (
-            <div className="p-d-flex p-jc-between">
-                <span className="p-input-icon-left">
-                <form >              
-                    <InputText value={searchText} placeholder="Keyword" onChange={onSearchTextChange}/>
-                    <Button label="Search" />
-                </form>
-                </span>
-            </div>
-        )
 
-    return (
-        <div>
-             <EventCardCreate eventCard = {createEventCard}/> 
-            <div id="wrapper" style={{marginLeft: 100, marginRight: 100}}>
-                <div className="container-fluid">
-                    
-                    <div className="card shadow mb-4">
-                        <DataTable value={eventcard} loading={loading}
-                            globalFilterFields={['status']} 
-                            stripedRows
-                            header={search} 
-                            emptyMessage="No customers found."
-                            paginator rows={6}
+    const header = (
+        <div className="table-header">
+            <Button type="button" label="Clear" className="p-button-outlined" icon="pi pi-filter-slash" onClick={reset} />
+            <span className="p-input-icon-left">
+                <i className="pi pi-search" />
+                <InputText type="search" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Global Search" />
+            </span>
+        </div>
+    );
+    
+
+
+     const statusRowFilterTemplate = (options) => 
+                                <Dropdown value={options.value}
+                                    options={eventType} onChange={(e) => options.filterApplyCallback(e.value)} 
+                                    itemTemplate={statusItemTemplate} style={{ minWidth: '12rem' }}
+                                    placeholder="Select One" className="p-column-filter" showClear                                
+                                />
+
+    const paginatorLeft = <Button type="button" className="p-button-text" />;
+    const paginatorRight = <Button type="button" className="p-button-text" />;
+
+     return (
+         <div>
+            <Helmet>
+                <title>Event Card | CashFlow </title>
+            </Helmet>
+
+            <Container>
+                <Stack direction="row" alignItems="center" justifyContent="space-between" mb={5}>
+                    <Typography variant="h4" gutterBottom>
+                        Event Card
+                    </Typography>
+                    <EventCardCreate createEventCard = {createEventCard}/> 
+                </Stack>               
+            </Container>
+
+ 
+            <div id="wrapper" style={{marginLeft: 50, marginRight: 50}}>
+                    <div className="datatable-style-demo">
+                        <div className="card">
+                            <DataTable showGridlines stripedRows paginator responsiveLayout="scroll"  
+                                paginatorTemplate="CurrentPageReport FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink RowsPerPageDropdown"
+                                currentPageReportTemplate="Showing {first} to {last} of {totalRecords}"
+                                paginatorLeft={paginatorLeft} paginatorRight={paginatorRight}
+                                rowsPerPageOptions={[4, 10, 20]} rows={4}
+                                value={eventcard} 
+                                loading= {loading} className='border-solid' style={{background: 'white'}}                                                              
+                                header={header} ref={dt}
+                                globalFilter={globalFilter}
+                                emptyMessage="No Record found."
+                                
                             >
-                            <Column field="Event_name" header="Event Name"  />
+                            <Column field="Event_name" header="Event Name" sortable />
                             <Column header="Image" body={imageCustom} />
-                            <Column field="Cost" header="Cost" />
+                            <Column field="Cost" header="Cost"  />
                             <Column field="Down_pay" header="Down Pay" />
-                            <Column field="Dept" header="Dept" />
-                            <Column field="Event_type_id" 
-                                    header="Type" 
-                                    showFilterMenu={false} 
-                                    body={statusBodyTemplate}  
+                            <Column field="Dept" header="Dept" />   
+                            <Column field="Event_type" 
+                                    header="Event Type" 
+                                    filterMenuStyle={{ width: '14rem' }}
+                                    style={{ minWidth: '12rem' }}
+                                    body={statusBodyTemplate} 
+                                    filter 
+                                    filterElement={statusRowFilterTemplate}
                                     />                  
                             <Column body={customButton}/>
                         </DataTable>
-
                     </div>
                 </div>
-            </div>
+            </div> 
         </div>
-    )
-}
+     )
+ }

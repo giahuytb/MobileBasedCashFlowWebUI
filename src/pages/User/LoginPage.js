@@ -21,6 +21,7 @@ const StyledSection = styled('div')(({ theme }) => ({
   width: '100%',
   maxWidth: 480,
   display: 'flex',
+  textAlign: 'center',
   flexDirection: 'column',
   justifyContent: 'center',
   boxShadow: theme.customShadows.card,
@@ -45,7 +46,7 @@ export default function LoginPage() {
   return (
     <>
       <Helmet>
-        <title> Login | Minimal UI </title>
+        <title> Login </title>
       </Helmet>
 
       <StyledRoot>
@@ -59,17 +60,17 @@ export default function LoginPage() {
 
         {mdUp && (
           <StyledSection>
-            <Typography variant="h3" sx={{ px: 5, mt: 10, mb: 5 }}>
+            <Typography style={{textAlign: 'center'}} variant="h3" sx={{ px: 5, mt: 10, mb: 5 }} >
               Hi, Welcome Back
             </Typography>
-            <img src="https://firebasestorage.googleapis.com/v0/b/mobilebasedcashflow-img.appspot.com/o/Image%2Flogo%202.png?alt=media&token=c4c3c385-8345-4408-9975-5b9451f2b78b" alt="login" />
+            <img src="https://firebasestorage.googleapis.com/v0/b/mobilebasedcashflow-img.appspot.com/o/Image%2FLogo.png?alt=media&token=688025f8-8918-4c76-818d-a9df9c8f5948" alt="login" />
           </StyledSection>
         )}
 
         <Container >
           <StyledContent>
-            <Typography variant="h4" gutterBottom>
-              Sign in to Mobile Based Cash Flow Web Admin
+            <Typography style={{textAlign: 'center'}} variant="h4" gutterBottom>
+              Mobile Based Cash Flow Web Admin
             </Typography>
 
             <LoginForm />

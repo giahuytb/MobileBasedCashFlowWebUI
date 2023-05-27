@@ -12,21 +12,45 @@ const navConfig = [
     icon: icon('ic_analytics'),
   },
   {
-    title: 'user',
+    title: 'User',
     path: '/dashboard/user',
     icon: icon('ic_user'),
   },
   
+  // {
+  //   title: 'Game Mod',
+  //   path: '/dashboard/gamemod',
+  //   icon: icon('ic_game'),
+  // },
+  
   {
     title: 'Event Card',
-    path: '/dashboard/ViewEventCard',
+    path: '/dashboard/eventcardlist',
     icon: icon('ic_blog'),
   },
 
   {
-    title: 'Job Card',
-    path: '/dashboard/ViewJobCard',
-    icon: icon('ic_cart'),
+    title: 'Job',
+    path: '/dashboard/jobcardlist',
+    icon: icon('ic_jobcard'),
+  },
+
+  {
+    title: 'Dream',
+    path: '/dashboard/dreamlist',
+    icon: icon('ic_dream'),
+  },
+
+  {
+    title: 'Game Account',
+    path: '/dashboard/gameaccountlist',
+    icon: icon('ic_accounting'),
+  },
+
+  {
+    title: 'Asset',
+    path: '/dashboard/assetList',
+    icon: icon('ic_accounting'),
   },
 
 

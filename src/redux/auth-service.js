@@ -3,10 +3,12 @@ import ApiService from '../api/ApiService'
     const loginAsync = async (username, password) => {
         try{
                 await ApiService.Authenticate(username, password).then(response => {
-                if(response.status === 200){
+                if(response.status === 200 && (response.data.user.roleName === 'Admin' || response.data.user.roleName === 'Administrator')){
                     localStorage.setItem("authToken", JSON.stringify(response.data.token));
                     localStorage.setItem("user", JSON.stringify(response.data.user));
-                }                                                                   
+                    localStorage.setItem("check", "true");
+                }
+                localStorage.setItem("errorMsg", "This account does not have permission to access");                                                                   
             })
         }catch(error){
             if (error.response) {

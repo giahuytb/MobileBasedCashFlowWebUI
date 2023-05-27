@@ -4,7 +4,6 @@ import { alpha } from '@mui/material/styles';
 import { Box, Divider, Typography, Stack, MenuItem, Avatar, IconButton, Popover } from '@mui/material';
 // mocks_
 import { useNavigate } from 'react-router-dom';
-import account from '../../../_mock/account';
 import authService from '../../../redux/auth-service';
 
 // ----------------------------------------------------------------------
@@ -13,14 +12,6 @@ const MENU_OPTIONS = [
   {
     label: 'Home',
     icon: 'eva:home-fill',
-  },
-  {
-    label: 'Profile',
-    icon: 'eva:person-fill',
-  },
-  {
-    label: 'Settings',
-    icon: 'eva:settings-2-fill',
   },
 ];
 
@@ -37,6 +28,8 @@ export default function AccountPopover() {
   const handleClose = () => {
     setOpen(null);
   };
+
+  const user = JSON.parse(localStorage.getItem('user'));
 
   const logout = () => {
     authService.logout();
@@ -63,7 +56,7 @@ export default function AccountPopover() {
           }),
         }}
       >
-        <Avatar src={account.photoURL} alt="photoURL" />
+        <Avatar src={user.ImageUrl} alt="photoURL" />
       </IconButton>
 
       <Popover
@@ -87,10 +80,10 @@ export default function AccountPopover() {
       >
         <Box sx={{ my: 1.5, px: 2.5 }}>
           <Typography variant="subtitle2" noWrap>
-            {account.displayName}
+            {user.Nickname}
           </Typography>
           <Typography variant="body2" sx={{ color: 'text.secondary' }} noWrap>
-            {account.email}
+            {user.Email}
           </Typography>
         </Box>
 
