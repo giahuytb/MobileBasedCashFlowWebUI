@@ -8,6 +8,7 @@ import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 // hook
 
+import { InputNumber } from 'primereact/inputnumber';
 import styles from '../../mystyle.module.css'
 
 
@@ -98,8 +99,8 @@ export default function DreamUpdate({ data, updateDream }) {
                     <div className="p-fluid p-formgrid p-grid">
                     <div className="p-field p-col">
                             <label className={styles.label}>Cost</label>
-                            <InputText value = {newDream.Cost} 
-                                id="firstname2" type="text" required
+                            <InputNumber value = {newDream.Cost} 
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => setNewDream ({ ...newDream, Cost: e.target.value })}/>
                         </div>                       
                     </div>

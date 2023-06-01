@@ -48,6 +48,7 @@ export default function LoginForm() {
       <form onSubmit={handleLogin}>
       <Stack spacing={3}>
         <TextField
+        required
         type="text"
         name="userName"
         label="User Name"
@@ -55,6 +56,7 @@ export default function LoginForm() {
         value={userName}/>
 
         <TextField
+          required
           name="password"
           label="Password"
           type={showPassword ? 'text' : 'password'}         

@@ -90,7 +90,7 @@ export default function DreamList({
                              globalFilter={globalFilter}
                              emptyMessage="No Record found."
                              >
-                             <Column field="Name" header="Dream name" sortable />
+                             <Column field="Name" header="Dream Name" sortable />
                              <Column field="Cost" header="Dream Cost"/>   
                              <Column body={customButton}/>
                          </DataTable>

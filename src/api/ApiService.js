@@ -3,7 +3,7 @@ import authHeader from "../redux/auth-header"
 
 
 const TotalUserPlayGameToDay = () => 
-        http.get(`api/participants/total-user-play-game-today`, {headers: authHeader() });
+        http.get(`api/gamematches/total-user-play-game-today`, {headers: authHeader() });
 
 const TotalMatchToDay = () => 
         http.get(`api/gamematches/total-match-today`, {headers: authHeader() });
@@ -17,6 +17,10 @@ const Authenticate = (userName, password) =>
 
 const Register = (userName, password) => 
         http.post(`api/users/authenticate`, {"userName": userName, "Password": password}, {headers: authHeader() });
+
+// Dream
+const GetAllUser = () => 
+        http.get(`api/users/user-list`, {headers: authHeader() });
 
 // Dream
 const GetAllDream = () => 
@@ -95,7 +99,11 @@ const UpdateGameAccount = (id, data) =>
         http.put(`api/gameaccounts/${id}`, data, {headers: authHeader() });
 
 const DeleteJGameAccount = (id) => 
-        http.delete(`api/gameaccounts/${id}` , {headers: authHeader() });   
+        http.delete(`api/gameaccounts/${id}` , {headers: authHeader() });
+
+const InAcctiveGameAccount = (id) => 
+        http.put(`api/gameaccounts/inactive/${id}`, {headers: authHeader() });
+        
         
 // Asset        
 const GetAllAsset = () => 
@@ -115,6 +123,7 @@ export default{
     // User
     Authenticate,
     Register,
+    GetAllUser,
 
     // Dream
     GetAllDream,
@@ -148,6 +157,7 @@ export default{
     CreateGameAccount,
     UpdateGameAccount,
     DeleteJGameAccount,
+    InAcctiveGameAccount,
     
     GetAllAsset,
     UpdateAssetById,

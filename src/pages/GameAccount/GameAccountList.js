@@ -11,6 +11,7 @@ import { Tag } from 'primereact/tag';
 import { Typography, Container, Stack} from '@mui/material';
 import GameAccountCreate from './GameAccountCreate';
 import GameAccountUpdate from './GameAccountUpdate';
+import GameAccountDelete from './GameAccountDelete';
 
 
 
@@ -18,12 +19,14 @@ GameAccountList.propTypes = {
      gameAccountList: PropTypes.array,
      updateGameAccount : PropTypes.func,
      createGameAccount : PropTypes.func,
+     deleteGameAccount : PropTypes.func,
 }
 
 export default function GameAccountList({
     gameAccountList,
     updateGameAccount,
     createGameAccount,
+    deleteGameAccount,
 }){
     const [gameAccount, setGameAccount] = useState([]);
     const [globalFilter, setGlobalFilter] = useState('');
@@ -59,6 +62,10 @@ export default function GameAccountList({
                 data = {rowData}
                 updateGameAccount = {updateGameAccount}
                 gameAccountList = {gameAccountList}
+            />
+            <GameAccountDelete
+                data = {rowData} 
+                deleteGameAccount={deleteGameAccount}   
             />
             </div>
         )    
