@@ -6,11 +6,11 @@ import Modal from 'react-modal'
 import { Button } from 'primereact/button';
 import { Toast } from 'primereact/toast';
 
-EventCardDelete.propTypes = {
+GameAccountDelete.propTypes = {
     data: PropTypes.string,
-    deleteEventCard: PropTypes.func,
+    deleteGameAccount: PropTypes.func,
 }
-export default function EventCardDelete({ data, deleteEventCard }) {
+export default function GameAccountDelete({ data, deleteGameAccount }) {
 
     const toast = useRef(null);
     const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -22,7 +22,7 @@ export default function EventCardDelete({ data, deleteEventCard }) {
     const submitForm = async (e) => {       
         e.preventDefault();  
         try {
-            deleteEventCard(data.id)
+            deleteGameAccount(data.id)
             setModalIsOpen(true);
         } catch (error) {
             // Handle any errors that occurred during the operations
@@ -72,7 +72,7 @@ export default function EventCardDelete({ data, deleteEventCard }) {
                 }}>
                 <h3 className="p-mb-10 p-text-bold"
                     style={{textAlign: 'center', color: '#FF0000'}}>
-                        Do you want to delete this event card ( {data.Event_name} )
+                        Do you want to delete this game account  ( {data.Game_account_name} )
                 </h3>
                 <br />
                 <form id="Event-Form" onSubmit={submitForm}>

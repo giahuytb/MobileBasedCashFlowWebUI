@@ -8,13 +8,13 @@ import SimpleLayout from './layouts/simple';
 import UserPage from './pages/User/UserPage';
 import LoginPage from './pages/User/LoginPage';
 import Page404 from './pages/Page404';
-import DashboardAppPage from './pages/DashboardPage/DashboardAppPage';
 import ViewEventCard from './pages/EventCard/index';
 import ViewJobCard from './pages/JobCard/index';
 import GameModPage from './pages/GameMod';
 import ViewDream from './pages/Dream';
 import ViewGameAccount from './pages/GameAccount';
 import ViewAsset from './pages/Asset';
+import Dashboard from './pages/DashboardPage';
 
 // const ViewEventCard = React.lazy(() => import('./pages/EventCard/index'));
 
@@ -46,7 +46,7 @@ export default function Router() {
       element: <DashboardLayout />,
       children: [
         { element: <Navigate to="/dashboard/app" />, index: true},
-        { path: 'app', element: <DashboardAppPage /> },
+        { path: 'app', element: <Dashboard /> },
         { path: 'user', element: <UserPage /> },
         { path: 'gamemod', element: <GameModPage /> },
         { path: 'eventcardlist', element: <ViewEventCard/>},

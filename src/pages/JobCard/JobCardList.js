@@ -9,7 +9,6 @@ import { InputText } from 'primereact/inputtext';
 import 'primereact/resources/themes/saga-blue/theme.css'
 import 'primereact/resources/primereact.min.css'
 import 'primeicons/primeicons.css'
-import { Tag } from 'primereact/tag';
 import { Helmet } from 'react-helmet-async';
 import { Container, Stack, Typography } from '@mui/material';
 
@@ -31,29 +30,6 @@ export default function JobCardList({
     const [globalFilter, setGlobalFilter] = useState('');
     const [loading, setLoading] = useState(true);
     const dt = useRef(null);
-
-    const converStatus = (typeId) =>{
-        switch (typeId) {
-            case true:
-                return "Active";
-            case false:
-                return "Inactive";
-            default:
-                return "Other";
-        }
-    };
-
-    const getStatusBackground = (status) => {
-        switch (status) {
-            case true:
-                return {background : '#2196f3',};
-            case false:
-                return {background : '#FF0000',};
-            default:
-                return {background : 'black',};
-        }
-    };
-
 
     useEffect(() => {
         setJobCard(jobCardList);
@@ -93,9 +69,6 @@ export default function JobCardList({
         </div>
     );
 
-    const statusBodyTemplate = (rowData) => <Tag value={converStatus(rowData.Status)} 
-                                                style ={getStatusBackground(rowData.Status)} />;
-
 
     const paginatorLeft = <Button type="button" className="p-button-text" />;
     const paginatorRight = <Button type="button" className="p-button-text" />;
@@ -130,12 +103,7 @@ export default function JobCardList({
                             globalFilter={globalFilter}>
                             <Column field="Job_card_name" header="Job Name"  />
                             <Column header="Image" body={imageCustom} />
-                            <Column field="Children_cost" header="Children Cost" /> 
-                            <Column field="Status" 
-                                     header="Status" 
-                                     showFilterMenu={false} 
-                                     body={statusBodyTemplate}  
-                                     />              
+                            <Column field="Children_cost" header="Children Cost" />             
                             <Column body={customButton}/>
                         </DataTable>
 

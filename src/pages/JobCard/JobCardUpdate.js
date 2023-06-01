@@ -190,7 +190,7 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label} >Job Name</label>
-                            <InputText id="firstname2" type="text" className='border-solid'
+                            <InputText id="firstname2" type="text" className='border-solid' required
                                 value = {newJobCard.Job_card_name}
                                 onChange={e => setNewJobCard ({ ...newJobCard, Job_card_name: e.target.value })}/>
                         </div>
@@ -198,7 +198,7 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         <div className="p-field p-col">
                             <label className={styles.label} >Children cost</label>
                                 <InputNumber value = {newJobCard.Children_cost} 
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => setNewJobCard ({ ...newJobCard, Children_cost: e.value })}/>
                         </div> 
                         
@@ -208,25 +208,25 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         <div className="p-field p-col">
                             <label className={styles.label}>Salary</label>
                             <InputNumber value = {newJobCard.Game_accounts[0].Game_account_value.toString()} 
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Salary")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Tax</label>
                             <InputNumber value = {newJobCard.Game_accounts[1].Game_account_value.toString()} 
-                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Tax")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Paying home loan interest</label>
                             <InputNumber value = {newJobCard.Game_accounts[2].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Paying home loan interest")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Car loan payment</label>
                             <InputNumber value = {newJobCard.Game_accounts[3].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Car loan payment")}/>
                         </div>
                     </div>
@@ -235,25 +235,25 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         <div className="p-field p-col">
                             <label className={styles.label}>Credit card loan payments</label>
                             <InputNumber value = {newJobCard.Game_accounts[4].Game_account_value.toString()} 
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Credit card loan payments")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Shopping costs</label>
                             <InputNumber value = {newJobCard.Game_accounts[5].Game_account_value.toString()} 
-                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Shopping costs")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Other cost</label>
                             <InputNumber value = {newJobCard.Game_accounts[6].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Other cost")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Child rearing costs</label>
                             <InputNumber value = {newJobCard.Game_accounts[7].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 readOnly/>
                         </div>
                     </div>
@@ -262,25 +262,25 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         <div className="p-field p-col">
                             <label className={styles.label}>Cash</label>
                             <InputNumber value = {newJobCard.Game_accounts[8].Game_account_value.toString()} 
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "cash")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Mortgage debt</label>
                             <InputNumber value = {newJobCard.Game_accounts[9].Game_account_value.toString()} 
-                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Mortgage debt")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Car debt</label>
                             <InputNumber value = {newJobCard.Game_accounts[10].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "Car debt")}/>
                         </div>
                         <div className="p-field p-col">
                             <label className={styles.label}>Credit card debt</label>
                             <InputNumber value = {newJobCard.Game_accounts[11].Game_account_value.toString()}  
-                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                                inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "credit card debt")}/>
                         </div>
                     </div>
@@ -289,7 +289,7 @@ export default function JobCardUpdate({ data, updateJobcard }) {
                         <div className="p-field p-col">
                             <label className={styles.label}>Installment purchase debt</label>
                             <InputNumber value = {newJobCard.Game_accounts[12].Game_account_value.toString()} 
-                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000}
+                            inputId="minmax" id="firstname2" type="text" mode="decimal" min={0} max={1000000} required
                                 onChange={e => updateGameAccount(e, "installment purchase debt")}/>
                         </div>                        
                     </div>

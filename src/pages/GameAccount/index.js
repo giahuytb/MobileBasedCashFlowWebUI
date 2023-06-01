@@ -151,6 +151,52 @@ export default function ViewGameAccount() {
         }   
     }
 
+    const DeleteGameAccount = async (id) => {
+        try {
+            console.log(id);
+            const DeleteGameAccountAPI = async () => {
+                console.log(id);
+                try {
+                    ApiService.InAcctiveGameAccount(id)
+                    .then(response => {
+                        console.log(response.data);
+                        if(response.status === 200){
+                            toast.current.show({severity: 'info', summary: 'Success', detail: 'Delete Success', life: 4000});
+                            setGameAccountList(gameAccountList.filter(ga => ga.id !== id));
+                        }
+                        if(response.status === 400){
+                            toast.current.show({severity: 'error', summary: 'Error', detail: 'Delete Failed', life: 4000});
+                        }
+                    }).catch((err) => {
+                        console.error(err);
+                        toast.current.show({severity: 'error', summary: 'Error', detail: "Delete Fail", life: 4000});
+                    })                   
+                } catch (error) {
+                    if (error.response) {
+                        // get response with a status code not in range 2xx
+                        console.log(error.response.data.data);
+                        console.log(error.response.data.status);
+                        console.log(error.response.data.headers);
+                        toast.current.show({severity: 'error', summary: 'Error', detail: error.response, life: 4000});
+                      } else if (error.request) {
+                        // no response
+                        console.log(error.request);
+                        toast.current.show({severity: 'error', summary: 'Error', detail: error.request, life: 4000});
+                      } else {
+                        // Something wrong in setting up the request
+                        console.log("Error", error.message);
+                        toast.current.show({severity: 'error', summary: 'Error', detail: error.message, life: 4000});
+                      }
+                      toast.current.show({severity: 'error', summary: 'Error', detail: error.config, life: 4000});    
+                }
+            } 
+            await DeleteGameAccountAPI();
+
+        } catch (error) {
+            console.log(`Fail To Delete Game Account: ${  error}`);
+        }   
+    }
+
     useEffect(() => {
         getAllGameAccount(); 
     }, [getAllGameAccount]);
@@ -163,6 +209,7 @@ export default function ViewGameAccount() {
                     gameAccountList = {gameAccountList}
                     createGameAccount = {CreateGameAccount}
                     updateGameAccount = {UpdateGameAccount}
+                    deleteGameAccount = {DeleteGameAccount}
                     />  
         </Suspense>
             

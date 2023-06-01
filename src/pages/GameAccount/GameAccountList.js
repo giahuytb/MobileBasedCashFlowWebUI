@@ -11,6 +11,7 @@ import { Tag } from 'primereact/tag';
 import { Typography, Container, Stack} from '@mui/material';
 import GameAccountCreate from './GameAccountCreate';
 import GameAccountUpdate from './GameAccountUpdate';
+import GameAccountDelete from './GameAccountDelete';
 
 
 
@@ -18,39 +19,19 @@ GameAccountList.propTypes = {
      gameAccountList: PropTypes.array,
      updateGameAccount : PropTypes.func,
      createGameAccount : PropTypes.func,
+     deleteGameAccount : PropTypes.func,
 }
 
 export default function GameAccountList({
     gameAccountList,
     updateGameAccount,
     createGameAccount,
+    deleteGameAccount,
 }){
     const [gameAccount, setGameAccount] = useState([]);
     const [globalFilter, setGlobalFilter] = useState('');
     const [loading, setLoading] = useState(true);
     const dt = useRef(null);
-
-    const converStatus = (typeId) =>{
-        switch (typeId) {
-            case true:
-                return "Active";
-            case false:
-                return "Inactive";
-            default:
-                return "Active";
-        }
-    };
-
-    const getStatusBackground = (status) => {
-        switch (status) {
-            case true:
-                return {background : '#2196f3',};
-            case false:
-                return {background : '#FF0000',};
-            default:
-                return {background : '#2196f3',};
-        }
-    };
 
     const getTypeBackground = (status) => {
         switch (status) {
@@ -82,11 +63,12 @@ export default function GameAccountList({
                 updateGameAccount = {updateGameAccount}
                 gameAccountList = {gameAccountList}
             />
+            <GameAccountDelete
+                data = {rowData} 
+                deleteGameAccount={deleteGameAccount}   
+            />
             </div>
         )    
-
-    const statusBodyTemplate = (rowData) => <Tag value={converStatus(rowData.Status)} 
-                                                style ={getStatusBackground(rowData.Status)} />;
 
     const typeBodyTemplate = (rowData) => <Tag value={rowData.Game_account_type} 
                                                 style ={getTypeBackground(rowData.Game_account_type)} />;
@@ -145,11 +127,6 @@ export default function GameAccountList({
                             <Column field="Game_account_type" 
                                     header="Type"
                                     body={typeBodyTemplate} />
-                            <Column field="Status" 
-                                    header="Status" 
-                                    showFilterMenu={false} 
-                                    body={statusBodyTemplate}  
-                                    />        
                             <Column body={customButton}/>
                         </DataTable>
                     </div>

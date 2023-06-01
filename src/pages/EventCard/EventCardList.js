@@ -81,7 +81,7 @@ export default function EventCardList({
                     gameAccountList = {gameAccountList}
                 />
                 <EventCardDelete
-                    id = {rowData.id}
+                    data = {rowData}
                     deleteEventCard = {deleteEventCard}
                 />
                 

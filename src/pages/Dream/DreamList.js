@@ -7,7 +7,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { InputText } from 'primereact/inputtext';
-import { Tag } from 'primereact/tag';
 import { Typography, Container, Stack} from '@mui/material';
 import DreamUpdate from './DreamUpdate';
 
@@ -26,28 +25,6 @@ export default function DreamList({
     const [loading, setLoading] = useState(true);
     const dt = useRef(null);
     const [globalFilter, setGlobalFilter] = useState('');
-
-    const convertType = (typeId) =>{
-        switch (typeId) {
-            case true:
-                return "Active";
-            case false:
-                return "Inactive";
-            default:
-                return "Other";
-        }
-    };
-
-    const getSeverity = (status) => {
-        switch (status) {
-            case true:
-                return {background : '#2196f3',};
-            case false:
-                return {background : '#FF0000',};
-            default:
-                return {background : 'black',};
-        }
-    };
 
     useEffect(() => {     
     setDream(dreamList);
@@ -85,8 +62,6 @@ export default function DreamList({
     );
 
 
-    const statusBodyTemplate = (rowData) => <Tag value={convertType(rowData.Status)} style ={getSeverity(rowData.Status)} />;
-
      return (
          <div>
             <Helmet>
@@ -115,13 +90,8 @@ export default function DreamList({
                              globalFilter={globalFilter}
                              emptyMessage="No Record found."
                              >
-                             <Column field="Name" header="Event Name" sortable />
-                             <Column field="Cost" header="Cost"/>
-                             <Column field="Status" 
-                                     header="Status" 
-                                     showFilterMenu={false} 
-                                     body={statusBodyTemplate}  
-                                     />        
+                             <Column field="Name" header="Dream Name" sortable />
+                             <Column field="Cost" header="Dream Cost"/>   
                              <Column body={customButton}/>
                          </DataTable>
                      </div>
